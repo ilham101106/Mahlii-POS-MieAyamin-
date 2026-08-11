@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MieAyamin POS - Mode Kasir (Point of Sale)</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Bar / Header Kasir -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-icon">🍜</div>
+      <div class="brand-info">
+        <h1>MieAyamin <span>POS</span></h1>
+        <p class="brand-tagline">Kasir & Transaksi Warung Mie Ayam</p>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="live-clock" id="liveClock"></div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary btn-sm" id="btnKasirHistory" title="Lihat Riwayat & Cetak Ulang Struk Transaksi">
+        <span>Riwayat Transaksi</span>
+      </button>
+      <a href="poster_qr.html" target="_blank" class="btn btn-secondary btn-sm" title="Cetak Poster QR Ulasan untuk Meja">
+        <span>Poster QR</span>
+      </a>
+      <div class="role-badge" title="Mode Kasir Aktif">
+        <span class="role-name">Kasir</span>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnSwitchRoleModalTrigger" title="Beralih Role (Kasir / Dapur / Owner)">
+        <span>Beralih Role</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Kasir Layout -->
+  <div class="app-container">
+    <!-- Sidebar Kasir Nav -->
+    <nav class="app-sidebar">
+      <ul class="nav-menu">
+        <li class="nav-item active">
+          <span class="nav-label">Kasir (POS)</span>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="shift-info">
+          <small>Kasir Aktif:</small>
+          <strong id="cashierShiftName">Shift 1</strong>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Area: POS -->
+    <main class="app-content">
+      <section class="tab-page active">
+        <div class="pos-layout">
+          <!-- Left Column: Menu Catalog -->
+          <div class="pos-catalog-column">
+            <!-- Search & Filters -->
+            <div class="catalog-header-bar">
+              <div class="catalog-header-top">
+                <div class="search-box">
+                  <input type="text" id="searchInput" placeholder="Cari menu mie ayam, minuman, topping, kerupuk...">
+                </div>
+                <div class="view-toggle-btns">
+                  <button class="btn-view-toggle active" id="btnViewGrid" title="Tampilan Card Grid">Grid</button>
+                  <button class="btn-view-toggle" id="btnViewList" title="Tampilan Daftar Ringkas">Daftar</button>
+                </div>
+              </div>
+
+              <!-- Klasifikasi Kategori Menu -->
+              <div class="category-tabs" id="categoryTabs">
+                <button class="cat-tab active" data-cat="all">Semua Menu</button>
+                <button class="cat-tab" data-cat="mie">Makanan & Mie Ayam</button>
+                <button class="cat-tab" data-cat="minuman">Minuman & Aneka Jus</button>
+                <button class="cat-tab" data-cat="topping">Extra Topping</button>
+                <button class="cat-tab" data-cat="kerupuk">Aneka Kerupuk</button>
+              </div>
+            </div>
+
+            <!-- Menu Cards Grid -->
+            <div class="menu-grid" id="menuGrid">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Right Column: Cart Panel -->
+          <div class="pos-cart-column">
+            <div class="cart-card">
+              <div class="cart-header">
+                <h3>Detail Pesanan</h3>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-secondary btn-sm" id="btnHoldOrder" title="Simpan pesanan sementara (Hold)">Hold</button>
+                  <button class="btn btn-secondary btn-sm" id="btnViewDrafts" title="Lihat pesanan yang disimpan">Draft (<span id="draftCountBadge">0</span>)</button>
+                  <button class="btn-reset-cart" id="btnResetCart" title="Kosongkan Keranjang">Reset</button>
+                </div>
+              </div>
+
+              <!-- Order Info Inputs -->
+              <div class="order-meta-box">
+                <div class="order-type-selector">
+                  <button class="btn-order-type active" data-type="dinein">Dine-in</button>
+                  <button class="btn-order-type" data-type="takeaway">Bungkus</button>
+                  <button class="btn-order-type" data-type="ojol">Ojol</button>
+                </div>
+                <div class="meta-row">
+                  <div class="meta-group">
+                    <label>NO. MEJA</label>
+                    <select id="tableSelect">
+                      <option value="Meja 01">Meja 01</option>
+                      <option value="Meja 02">Meja 02</option>
+                      <option value="Meja 03">Meja 03</option>
+                      <option value="Meja 04">Meja 04</option>
+                      <option value="Meja 05">Meja 05</option>
+                      <option value="Meja 06">Meja 06</option>
+                      <option value="Bawa Pulang">Bawa Pulang</option>
+                    </select>
+                  </div>
+                  <div class="meta-group flex-2">
+                    <label>PELANGGAN</label>
+                    <input type="text" id="customerNameInput" placeholder="Nama Pelanggan (opsional)">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cart Item List -->
+              <div class="cart-items-wrapper" id="cartItemsList">
+                <!-- Rendered via JS -->
+              </div>
+
+              <!-- Cart Summary & Checkout Action -->
+              <div class="cart-footer">
+                <div class="summary-line">
+                  <span>Subtotal</span>
+                  <strong id="cartSubtotal">Rp 0</strong>
+                </div>
+                <div class="summary-line text-muted">
+                  <span>Pajak (0%)</span>
+                  <strong id="cartTax">Rp 0</strong>
+                </div>
+                <div class="summary-line total-line">
+                  <span>Total Bayar</span>
+                  <strong id="cartTotal" class="text-primary">Rp 0</strong>
+                </div>
+                <button class="btn btn-primary btn-block btn-lg" id="btnCheckout" disabled>
+                  <span>PROSES PEMBAYARAN</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: RIWAYAT TRANSAKSI KASIR -->
+  <div class="modal-overlay" id="kasirHistoryModal">
+    <div class="modal-card" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>Riwayat Transaksi Kasir</h3>
+        <button class="btn-close" id="btnCloseKasirHistory">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:12px;">
+          <input type="text" id="searchKasirTxInput" placeholder="Cari ID Transaksi / Nama Pelanggan / No. Meja..." style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border-color); font-size:0.88rem;">
+        </div>
+        <div id="kasirHistoryList" style="display:flex; flex-direction:column; gap:10px; max-height:400px; overflow-y:auto;">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCloseKasirHistoryFooter">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SWITCH ROLE SELECTOR -->
+  <div class="modal-overlay" id="switchRoleModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3>Beralih Role Pengguna</h3>
+        <button class="btn-close" id="btnCloseSwitchRole">&times;</button>
+      </div>
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:12px;">
+        <a href="kasir.html" class="btn btn-secondary btn-lg" style="justify-content:flex-start;">
+          <div style="text-align:left;">
+            <strong>Mode Kasir (POS)</strong>
+            <small style="display:block; color:var(--text-muted);">Pencatatan pesanan & transaksi kasir</small>
+          </div>
+        </a>
+        <a href="dapur.html" class="btn btn-secondary btn-lg" style="justify-content:flex-start;">
+          <div style="text-align:left;">
+            <strong>Mode Dapur (KDS)</strong>
+            <small style="display:block; color:var(--text-muted);">Layar antrean masakan real-time</small>
+          </div>
+        </a>
+        <button class="btn btn-secondary btn-lg" id="btnSelectOwnerRole" style="justify-content:flex-start; text-align:left;">
+          <div>
+            <strong>Mode Owner (Admin)</strong>
+            <small style="display:block; color:var(--text-muted);">Laporan omset, kelola stok & foto (PIN 9999)</small>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: OWNER PIN CHECK -->
+  <div class="modal-overlay" id="portalPinModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3>Verifikasi PIN Owner</h3>
+        <button class="btn-close" id="btnClosePortalPin">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label style="font-weight:700; font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:8px;">Masukkan PIN Keamanan Owner:</label>
+        <input type="password" id="portalPinDisplay" readonly placeholder="••••" style="background:var(--bg-card-subtle); border:2px solid var(--border-color); color:var(--text-main); text-align:center; font-size:1.5rem; letter-spacing:6px; margin-bottom:14px; width:100%; border-radius:12px; padding:10px;">
+        <div class="keypad-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;">
+          <button class="keypad-btn owner-pin-key" data-key="1">1</button>
+          <button class="keypad-btn owner-pin-key" data-key="2">2</button>
+          <button class="keypad-btn owner-pin-key" data-key="3">3</button>
+          <button class="keypad-btn owner-pin-key" data-key="4">4</button>
+          <button class="keypad-btn owner-pin-key" data-key="5">5</button>
+          <button class="keypad-btn owner-pin-key" data-key="6">6</button>
+          <button class="keypad-btn owner-pin-key" data-key="7">7</button>
+          <button class="keypad-btn owner-pin-key" data-key="8">8</button>
+          <button class="keypad-btn owner-pin-key" data-key="9">9</button>
+          <button class="keypad-btn owner-pin-key key-danger" data-key="C" style="background:#fee2e2; color:#ef4444;">C</button>
+          <button class="keypad-btn owner-pin-key" data-key="0">0</button>
+          <button class="keypad-btn owner-pin-key key-success" data-key="OK" style="background:#d1fae5; color:#059669;">OK</button>
+        </div>
+        <small style="color:var(--text-muted); display:block; text-align:center; margin-top:10px;">PIN Default Owner: <code>9999</code></small>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DRAFT HELD ORDERS -->
+  <div class="modal-overlay" id="holdOrdersModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Daftar Pesanan Di-Hold (Drafts)</h3>
+        <button class="btn-close" id="btnCloseHoldOrders">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="holdOrdersList" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCancelHoldOrders">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CHECKOUT & PEMBAYARAN -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Pembayaran Transaksi Kasir</h3>
+        <button class="btn-close" id="btnCloseCheckout">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="checkout-method-selector" style="display:flex; gap:10px; margin-bottom:14px;">
+          <button class="btn-pay-method active" data-method="Tunai" style="flex:1;">Tunai</button>
+          <button class="btn-pay-method" data-method="QRIS" style="flex:1;">QRIS</button>
+          <button class="btn-pay-method" data-method="Transfer" style="flex:1;">Transfer / EDC</button>
+        </div>
+
+        <div class="checkout-summary-box" style="background:var(--bg-card-subtle); padding:12px 16px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color);">
+          <div class="checkout-detail-item"><span>Subtotal:</span><strong id="checkoutSubtotal">Rp 0</strong></div>
+          <div class="checkout-detail-item"><span>Pajak (0%):</span><strong id="checkoutTax">Rp 0</strong></div>
+          <div class="checkout-detail-item total-row" style="margin-top:4px; font-size:1.2rem;"><span>Total Tagihan:</span><strong id="checkoutGrandTotal" style="color:var(--primary); font-size:1.35rem;">Rp 0</strong></div>
+        </div>
+
+        <div id="cashPaymentGroup" class="form-group">
+          <label style="font-weight:800; font-size:0.85rem; margin-bottom:4px; display:block; color:var(--text-muted);">PECAHAN QUICK-CASH:</label>
+          <div class="quick-cash-grid" style="margin-bottom:10px;">
+            <button class="btn-quick-cash" data-cash="pas">Uang Pas</button>
+            <button class="btn-quick-cash" data-cash="20000">Rp 20.000</button>
+            <button class="btn-quick-cash" data-cash="50000">Rp 50.000</button>
+            <button class="btn-quick-cash" data-cash="100000">Rp 100.000</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px; align-items:center;">
+            <div>
+              <label style="font-weight:800; font-size:0.8rem; margin-bottom:4px; display:block; color:var(--text-muted);">JUMLAH DITERIMA (RP):</label>
+              <input type="number" id="payGivenInput" placeholder="0" style="font-size:1.25rem; font-weight:800; width:100%; padding:8px 10px; border-radius:10px; border:2px solid var(--border-color); text-align:right;">
+            </div>
+            <div style="background:#d1fae5; padding:8px 12px; border-radius:10px; text-align:center; border:1px solid #10b981;">
+              <span style="font-weight:700; color:#065f46; font-size:0.75rem; display:block;">UANG KEMBALIAN</span>
+              <strong id="payChangeText" style="color:#047857; font-size:1.35rem;">Rp 0</strong>
+            </div>
+          </div>
+
+          <div class="numpad-container" style="gap:6px;">
+            <button class="keypad-btn cashier-numpad" data-num="1">1</button>
+            <button class="keypad-btn cashier-numpad" data-num="2">2</button>
+            <button class="keypad-btn cashier-numpad" data-num="3">3</button>
+            <button class="keypad-btn cashier-numpad" data-num="4">4</button>
+            <button class="keypad-btn cashier-numpad" data-num="5">5</button>
+            <button class="keypad-btn cashier-numpad" data-num="6">6</button>
+            <button class="keypad-btn cashier-numpad" data-num="7">7</button>
+            <button class="keypad-btn cashier-numpad" data-num="8">8</button>
+            <button class="keypad-btn cashier-numpad" data-num="9">9</button>
+            <button class="keypad-btn cashier-numpad key-danger" data-num="C" style="background:#fee2e2; color:#ef4444;">C</button>
+            <button class="keypad-btn cashier-numpad" data-num="0">0</button>
+            <button class="keypad-btn cashier-numpad" data-num="00">00</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCancelCheckout">Batal</button>
+        <button class="btn btn-primary btn-lg" id="btnConfirmPay" style="flex:1;">Selesaikan & Bayar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: STRUK THERMAL -->
+  <div class="modal-overlay" id="receiptModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3>Struk Pembayaran</h3>
+        <button class="btn-close" id="btnCloseReceipt">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="thermal-receipt" id="receiptPrintArea">
+          <div style="text-align:center; margin-bottom:12px;">
+            <h3 style="margin:0; font-size:1.2rem; font-weight:800;">MIEAYAMIN POS</h3>
+            <small>Warung Mie Ayam & Yamin Otentik</small><br>
+            <small id="receiptTxId">TRX-000</small>
+          </div>
+          <hr style="border-top:1px dashed #000; margin:8px 0;">
+          <div style="display:flex; justify-content:space-between;">
+            <span id="receiptDateTime">05 Aug 2026</span>
+            <span id="receiptType">Dine-in</span>
+          </div>
+          <div id="receiptCustomer" style="font-weight:700; margin-bottom:6px;">Pelanggan</div>
+          <hr style="border-top:1px dashed #000; margin:8px 0;">
+
+          <div id="receiptItemsList"></div>
+
+          <hr style="border-top:1px dashed #000; margin:8px 0;">
+          <div style="display:flex; justify-content:space-between;"><span>Subtotal:</span><span id="receiptSubtotal">Rp 0</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>Pajak (0%):</span><span id="receiptTax">Rp 0</span></div>
+          <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1rem; margin-top:4px;"><span>TOTAL:</span><span id="receiptTotal">Rp 0</span></div>
+          <hr style="border-top:1px dashed #000; margin:8px 0;">
+          <div style="display:flex; justify-content:space-between;"><span>Metode:</span><span id="receiptPayMethod">Tunai</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>Diterima:</span><span id="receiptPayGiven">Rp 0</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>Kembali:</span><span id="receiptChange">Rp 0</span></div>
+          <div style="text-align:center; margin-top:14px;">
+            <small>Terima Kasih Atas Kunjungan Anda!</small>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnFinishReceipt">Selesai</button>
+        <button class="btn btn-primary" id="btnPrintReceipt">Cetak Struk</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/kasir.js"></script>
+</body>
+</html>

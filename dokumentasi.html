@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokumentasi & Spesifikasi Lengkap - MieAyamin POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #d97706;
+      --primary-light: #fef3c7;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #cbd5e1;
+      --bg-light: #f8fafc;
+      --success: #059669;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #f1f5f9 0%, #fef3c7 100%);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 40px 20px;
+    }
+    .print-btn-bar {
+      max-width: 960px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .print-hint { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+    .btn-print {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px rgba(217,119,6,0.35);
+      transition: all 0.2s;
+    }
+    .btn-print:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217,119,6,0.45); }
+
+    .doc-container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 56px 64px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      border: 1px solid rgba(203,213,225,0.7);
+    }
+    .doc-header {
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 28px;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+    .doc-brand { display: flex; align-items: center; gap: 16px; }
+    .doc-brand-icon {
+      font-size: 2.6rem;
+      background: var(--primary-light);
+      padding: 10px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(217,119,6,0.25);
+    }
+    .doc-brand h1 { font-size: 2rem; font-weight: 800; color: var(--text-main); }
+    .doc-brand h1 span { color: var(--primary); }
+    .doc-brand p { color: var(--text-muted); font-weight: 600; font-size: 0.95rem; margin-top: 4px; }
+    .doc-meta {
+      text-align: right;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .doc-meta strong { color: var(--text-main); display: block; margin-bottom: 4px; }
+    .doc-meta .badge {
+      display: inline-block;
+      background: #d1fae5;
+      color: var(--success);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-top: 44px;
+      margin-bottom: 16px;
+      border-left: 5px solid var(--primary);
+      padding-left: 14px;
+      line-height: 1.3;
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 22px;
+      margin-bottom: 10px;
+    }
+    p { font-size: 0.95rem; color: var(--text-main); margin-bottom: 12px; }
+    ul, ol { padding-left: 22px; margin-bottom: 16px; }
+    li { font-size: 0.93rem; margin-bottom: 7px; }
+    strong { font-weight: 700; }
+
+    code {
+      background: #f1f5f9;
+      color: #d97706;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    pre {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 22px 24px;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.83rem;
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+    pre .hi { color: #f59e0b; }
+
+    .table-doc {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0 24px 0;
+      font-size: 0.9rem;
+    }
+    .table-doc th, .table-doc td {
+      border: 1px solid var(--border-color);
+      padding: 11px 16px;
+      text-align: left;
+    }
+    .table-doc th {
+      background: var(--bg-light);
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .table-doc td code { background: transparent; padding: 0; }
+
+    /* Screenshot Cards */
+    .screenshot-card {
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 20px 0 28px 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    }
+    .screenshot-card-header {
+      background: var(--bg-light);
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .screenshot-card-header .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    .screenshot-card img {
+      width: 100%;
+      display: block;
+      max-height: 520px;
+      object-fit: cover;
+      object-position: top;
+    }
+    .screenshot-card .caption {
+      padding: 10px 18px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      background: var(--bg-light);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px dashed var(--border-color);
+      margin: 36px 0;
+    }
+
+    .info-box {
+      background: var(--primary-light);
+      border: 1px solid rgba(217,119,6,0.3);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 14px 0;
+    }
+    .info-box strong { color: var(--primary); }
+
+    .footer-doc {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 2px dashed var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .doc-container { box-shadow: none; border: none; padding: 28px 36px; max-width: 100%; border-radius: 0; }
+      .print-btn-bar { display: none; }
+      .screenshot-card img { max-height: 400px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-btn-bar">
+    <span class="print-hint">💡 Tekan <kbd>Ctrl + P</kbd> atau klik tombol di kanan untuk ekspor ke PDF</span>
+    <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan Sebagai PDF</button>
+  </div>
+
+  <div class="doc-container">
+
+    <!-- HEADER -->
+    <div class="doc-header">
+      <div class="doc-brand">
+        <div class="doc-brand-icon">🍜</div>
+        <div>
+          <h1>MieAyamin <span>POS</span></h1>
+          <p>Dokumentasi Lengkap & Arsitektur Sistem</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <strong>Versi Sistem: v2.5 Final</strong>
+        Tanggal Terbit: 11 Agustus 2026<br>
+        Status UI: Locked & Standardized
+        <span class="badge">✅ Offline-First</span>
+      </div>
+    </div>
+
+    <!-- 1. RINGKASAN SISTEM -->
+    <h2>1. RINGKASAN SISTEM</h2>
+    <p><strong>MieAyamin POS</strong> adalah aplikasi Point of Sale (Kasir) & Manajemen Operasional Warung Mie Ayam modern yang dibangun menggunakan standar teknologi <strong>Web Native (HTML5, Vanilla CSS3, JavaScript ES6+, Web LocalStorage API)</strong> — tanpa framework atau dependensi backend luar.</p>
+    <p>Aplikasi ini bersifat <strong>offline-first</strong>: semua data tersimpan langsung di browser melalui <code>localStorage</code>, dapat dioperasikan tanpa koneksi internet, dan mendukung fungsionalitas penuh Kasir POS, antrean Dapur (KDS), laporan omset, manajemen stok bahan baku, serta pengelolaan foto katalog produk.</p>
+
+    <hr class="section-divider">
+
+    <!-- 2. ARSITEKTUR PROJECT -->
+    <h2>2. ARSITEKTUR & STRUKTUR BERKAS PROJECT</h2>
+    <pre>c:\GALERI\POS MieAyamin/
+├── <span class="hi">index.html</span>           # Landing Page Utama — Fokus Layar Kasir POS
+├── <span class="hi">kasir.html</span>           # Modul Utama Kasir (POS Workspace)
+├── <span class="hi">dapur.html</span>           # Modul Dapur / Kitchen Display System (KDS)
+├── <span class="hi">admin.html</span>           # Modul Owner / Admin Dashboard (Laporan Omset & Stok)
+├── poster_qr.html       # Printable Poster QR Code Ulasan Pelanggan Meja
+├── dokumentasi.html     # Dokumen Spesifikasi Ini (Siap Cetak / PDF)
+├── styles.css           # Fallback Design System CSS Root
+├── css/
+│   └── styles.css       # Master Design System — Amber Gold POS Design Tokens
+├── js/
+│   ├── storage.js       # Shared State Manager, LocalStorage API, Web Audio Synthesizer
+│   ├── kasir.js         # Logika Transaksi Kasir, Cart, Hold/Draft, Checkout Payment
+│   ├── dapur.js         # Logika Antrean Dapur KDS, Live Timer, Sound Notif
+│   └── admin.js         # Analytics Omset, Kelola Stok, Kelola Foto Menu
+└── images/              # Aset Foto Produk Visual (PNG)
+    ├── mie_yamin_manis.png
+    ├── mie_ayam_komplit.png
+    ├── es_teh_jumbo.png
+    └── es_jeruk_peras.png</pre>
+
+    <hr class="section-divider">
+
+    <!-- 3. MODUL KASIR -->
+    <h2>3. MODUL KASIR (POS) — index.html / kasir.html</h2>
+    <p>Modul utama aplikasi. Halaman ini adalah layar pertama yang terbuka ketika aplikasi diakses. Berfungsi sebagai antarmuka pencatatan pesanan, pembayaran, dan pengelolaan transaksi kasir warung.</p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-card-header">
+        <span class="dot"></span>
+        <span>Tampilan Halaman Kasir (POS) — http://localhost:3000/</span>
+      </div>
+      <img src="images/ss_kasir.png" alt="Screenshot Halaman Kasir POS MieAyamin">
+      <div class="caption">📸 Tampilan standar layar kasir dengan kategori menu, grid produk, dan panel keranjang pesanan.</div>
+    </div>
+
+    <h3>Fitur Utama Modul Kasir:</h3>
+    <ul>
+      <li><strong>Klasifikasi Kategori Menu (Pill Tab Filter)</strong>: <code>Semua Menu</code> | <code>🍜 Makanan & Mie Ayam</code> | <code>🍹 Minuman & Aneka Jus</code> | <code>🍢 Extra Topping</code> | <code>🍿 Aneka Kerupuk</code></li>
+      <li><strong>Mode Tampilan Grid / List</strong>: Tombol beralih antara tampilan Card Grid 📱 (visual foto produk) dan Daftar Ringkas 📋.</li>
+      <li><strong>Pencarian Cepat</strong>: Input teks real-time dengan shortcut keyboard <code>/</code> atau <code>F2</code>.</li>
+      <li><strong>Hold Order & Drafts</strong>: Tombol <code>⏸️ Hold</code> untuk menahan pesanan aktif dan <code>📋 Draft</code> untuk memuat kembali pesanan sementara kapan saja.</li>
+      <li><strong>Tipe Pesanan</strong>: Pilihan <code>🍽️ Dine-in</code>, <code>🛍️ Bungkus</code>, dan <code>🛵 Ojol</code> pada setiap pesanan.</li>
+      <li><strong>Modal Pembayaran Multimetode</strong>: Mendukung Tunai (dengan Quick-Cash: Uang Pas / 20rb / 50rb / 100rb, dan Touch Numpad Grid), QRIS, dan Transfer/EDC. Kalkulasi kembalian otomatis real-time.</li>
+      <li><strong>Audio Synthesizer (Web Audio API)</strong>: Membunyikan suara <em>chime</em> khas kasir saat transaksi sukses diselesaikan.</li>
+      <li><strong>Struk Thermal Printable</strong>: Modal struk siap cetak dengan rincian transaksi lengkap (ID, tanggal, item, total, kembalian).</li>
+      <li><strong>Beralih Role</strong>: Tombol <code>🔑 Beralih Role</code> di header untuk pindah ke Mode Dapur (KDS) atau Mode Owner (Admin PIN 9999).</li>
+    </ul>
+
+    <hr class="section-divider">
+
+    <!-- 4. MODUL DAPUR -->
+    <h2>4. MODUL DAPUR (KDS) — dapur.html</h2>
+    <p>Kitchen Display System untuk area dapur warung. Secara otomatis menerima pesanan baru dari Modul Kasir melalui <code>localStorage</code> dan menampilkannya dalam antrean masakan real-time.</p>
+
+    <div class="screenshot-card">
+      <div class="screenshot-card-header">
+        <span class="dot" style="background:#ef4444;"></span>
+        <span>Tampilan Halaman Dapur (KDS) — http://localhost:3000/dapur.html</span>
+      </div>
+      <img src="images/ss_dapur.png" alt="Screenshot Halaman Dapur KDS MieAyamin">
+      <div class="caption">📸 Layar dapur Obsidian Dark Theme dengan antrean pesanan, live timer, dan indikator warna urgensi masakan.</div>
+    </div>
+
+    <h3>Fitur Utama Modul Dapur:</h3>
+    <ul>
+      <li><strong>Obsidian Dark Theme</strong>: Latar gelap (<code>#0f172a</code>) kontras tinggi, optimal untuk layar area dapur yang terpapar cahaya berlebih.</li>
+      <li><strong>Live Order Timer Ticker</strong>: Menghitung durasi waktu sejak pesanan masuk (<code>⏱️ 04:15</code>).</li>
+      <li><strong>Indikator Warna Urgensi Masakan</strong>:
+        <ul>
+          <li>🟢 <strong>Hijau</strong>: &lt; 5 menit (Baru Masuk, Santai)</li>
+          <li>🟡 <strong>Kuning Amber</strong>: 5–10 menit (Perlu Diproses Segera)</li>
+          <li>🔴 <strong>Merah Pulse Berkedip</strong>: &gt; 10 menit (Sangat Mendesak / Prioritas Tertinggi!)</li>
+        </ul>
+      </li>
+      <li><strong>Toggle Status Pesanan</strong>: <code>Menunggu</code> ➔ <code>Sedang Dimasak</code> ➔ <code>Selesai ✅</code></li>
+      <li><strong>Notifikasi Suara Antrean Baru</strong>: Audio sintetis berbunyi secara otomatis saat pesanan baru dikirim dari kasir.</li>
+    </ul>
+
+    <hr class="section-divider">
+
+    <!-- 5. MODUL ADMIN -->
+    <h2>5. MODUL OWNER / ADMIN DASHBOARD — admin.html</h2>
+    <p>Panel manajemen bisnis yang dilindungi PIN keamanan. Digunakan oleh pemilik warung untuk memantau performa bisnis, mengelola stok bahan baku, dan mengatur katalog menu beserta foto produk.</p>
+
+    <div class="info-box">
+      <strong>🔐 PIN Keamanan Default Owner: <code>9999</code></strong><br>
+      Akses panel Admin hanya dapat dilakukan setelah memasukkan PIN yang benar melalui keypad. PIN ini dapat diubah melalui kode sumber di file <code>js/admin.js</code> dan <code>js/kasir.js</code>.
+    </div>
+
+    <div class="screenshot-card">
+      <div class="screenshot-card-header">
+        <span class="dot" style="background:#7c3aed;"></span>
+        <span>Tampilan Halaman Owner / Admin Dashboard — http://localhost:3000/admin.html</span>
+      </div>
+      <img src="images/ss_admin.png" alt="Screenshot Halaman Admin Owner Dashboard MieAyamin">
+      <div class="caption">📸 Dashboard Owner dengan metric KPI, grafik omset penjualan per jam, top best seller, kelola stok, dan kelola foto menu produk.</div>
+    </div>
+
+    <h3>Fitur Utama Modul Owner / Admin:</h3>
+    <ul>
+      <li><strong>Analisis KPI Penjualan</strong>: Metric card Total Omset, Jumlah Transaksi, Estimasi Laba Bersih (45%), dan Total Pendapatan QRIS.</li>
+      <li><strong>Grafik Batang Omset per Jam</strong>: Visualisasi distribusi omset per jam operasional warung (10:00–21:00).</li>
+      <li><strong>Top 5 Best Seller</strong>: Peringkat menu terlaris berdasarkan jumlah penjualan real-time.</li>
+      <li><strong>Kelola Stok Bahan Baku</strong>: Tabel persediaan stok (Mie basah, Ayam semur, Bakso, Pangsit, Jeruk, Teh, dll.) dengan:
+        <ul>
+          <li>Indikator badge <code>⚠️ Stok Menipis</code> otomatis jika sisa stok &lt; MinStock.</li>
+          <li>Tombol quick adjuster (<code>−</code> Qty <code>+</code>) untuk mengubah stok langsung dari tabel.</li>
+          <li>Tombol Restock <code>+10</code> untuk penambahan cepat 10 unit.</li>
+        </ul>
+      </li>
+      <li><strong>Kelola Katalog Menu & Foto Produk</strong>:
+        <ul>
+          <li>Tombol <code>➕ Tambah Menu Produk Baru</code>: Menambah produk baru beserta nama, kategori POS, harga, deskripsi, dan foto (via URL atau upload).</li>
+          <li>Tombol <code>📷 Edit Foto</code>: Mengubah foto produk mana pun secara langsung.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <hr class="section-divider">
+
+    <!-- 6. DESIGN SYSTEM -->
+    <h2>6. DESIGN SYSTEM & SPESIFIKASI UI (Amber Gold POS Theme)</h2>
+
+    <h3>A. Palet Warna Utama</h3>
+    <table class="table-doc">
+      <thead><tr><th>Token Warna</th><th>Kode HEX</th><th>Penggunaan</th></tr></thead>
+      <tbody>
+        <tr><td><code>--primary</code></td><td><code>#d97706</code></td><td>Warna utama aksen Amber Emas — tombol, harga, border aktif.</td></tr>
+        <tr><td><code>--primary-gradient</code></td><td><code>#f59e0b → #d97706</code></td><td>Gradien tombol CTA utama.</td></tr>
+        <tr><td><code>--bg-canvas</code></td><td><code>#f1f5f9</code></td><td>Latar belakang kanvas aplikasi.</td></tr>
+        <tr><td><code>--bg-card</code></td><td><code>#ffffff</code></td><td>Latar belakang kartu menu & panel.</td></tr>
+        <tr><td><code>--text-main</code></td><td><code>#0f172a</code></td><td>Teks utama (judul, harga, nama menu).</td></tr>
+        <tr><td><code>--success</code></td><td><code>#10b981</code></td><td>Status selesai, uang pas, sisa stok aman.</td></tr>
+        <tr><td><code>--danger</code></td><td><code>#ef4444</code></td><td>Status urgent, stok menipis, timer merah KDS.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>B. Tipografi</h3>
+    <table class="table-doc">
+      <thead><tr><th>Elemen</th><th>Font / Weight</th><th>Ukuran</th></tr></thead>
+      <tbody>
+        <tr><td>Font Family Utama</td><td>Plus Jakarta Sans (Google Fonts)</td><td>—</td></tr>
+        <tr><td>Brand Header</td><td>800 ExtraBold</td><td>1.3rem</td></tr>
+        <tr><td>Nama Menu</td><td>800 ExtraBold</td><td>1.0rem</td></tr>
+        <tr><td>Harga Menu</td><td>800 ExtraBold</td><td>1.1rem</td></tr>
+        <tr><td>Teks Body</td><td>600 SemiBold</td><td>0.9rem</td></tr>
+      </tbody>
+    </table>
+
+    <hr class="section-divider">
+
+    <!-- 7. DATA LOCALSTORAGE -->
+    <h2>7. SKEMA DATA LOCALSTORAGE</h2>
+    <p>Storage Key: <code>mieayamin_pos_v2_data</code> — Seluruh data tersimpan di <code>window.localStorage</code> browser tanpa server.</p>
+
+    <table class="table-doc">
+      <thead><tr><th>Properti Data</th><th>Tipe</th><th>Keterangan</th></tr></thead>
+      <tbody>
+        <tr><td><code>cart</code></td><td>Array of Objects</td><td>Item belanjaan aktif di keranjang kasir saat ini.</td></tr>
+        <tr><td><code>transactions</code></td><td>Array of Objects</td><td>Riwayat seluruh transaksi pembayaran yang telah selesai.</td></tr>
+        <tr><td><code>kitchenOrders</code></td><td>Array of Objects</td><td>Antrean pesanan masakan aktif di layar Dapur (KDS).</td></tr>
+        <tr><td><code>draftOrders</code></td><td>Array of Objects</td><td>Pesanan yang disimpan sementara (Hold orders).</td></tr>
+        <tr><td><code>stock</code></td><td>Object Map</td><td>Persediaan stok bahan baku beserta nilai minimum stok.</td></tr>
+        <tr><td><code>customMenu</code></td><td>Array of Objects</td><td>Katalog menu kustom beserta harga dan URL foto produk.</td></tr>
+      </tbody>
+    </table>
+
+    <hr class="section-divider">
+
+    <!-- 8. PANDUAN UPDATE -->
+    <h2>8. PANDUAN PENGEMBANGAN & MAINTENANCE MASA DEPAN</h2>
+
+    <h3>A. Mengubah PIN Owner (Default: <code>9999</code>)</h3>
+    <p>Buka file <code>js/admin.js</code> dan <code>js/kasir.js</code>, cari teks <code>'9999'</code> dan ganti dengan PIN baru Anda.</p>
+
+    <h3>B. Menambah / Mengubah Foto Produk</h3>
+    <ul>
+      <li><strong>Via Aplikasi</strong>: Mode Owner (PIN 9999) ➔ Tab <strong>Kelola Menu & Foto</strong> ➔ Klik <code>📷 Edit Foto</code> atau <code>➕ Tambah Menu</code>.</li>
+      <li><strong>Via Kode</strong>: Simpan foto baru di folder <code>images/</code>, lalu update properti <code>image: 'images/foto_baru.png'</code> pada <code>DEFAULT_MENU</code> di <code>js/storage.js</code>.</li>
+    </ul>
+
+    <h3>C. Menambah Kategori Menu Baru</h3>
+    <p>Tambahkan tombol tab baru di <code>kasir.html</code> / <code>index.html</code>:</p>
+    <pre>&lt;button class="cat-tab" data-cat="snack"&gt;🍟 Aneka Snack&lt;/button&gt;</pre>
+    <p>Lalu tambahkan produk dengan properti <code>cat: 'snack'</code> pada <code>DEFAULT_MENU</code> di <code>js/storage.js</code>.</p>
+
+    <h3>D. Menjalankan Aplikasi Secara Lokal</h3>
+    <pre>npx serve .
+# Buka di browser: http://localhost:3000</pre>
+
+    <!-- FOOTER -->
+    <div class="footer-doc">
+      <span>📁 Lokasi Project: <code>C:\GALERI\POS MieAyamin\</code></span>
+      <span>&copy; 2026 MieAyamin POS System — Hak Cipta Dilindungi.</span>
+    </div>
+
+  </div>
+
+</body>
+</html>

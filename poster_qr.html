@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poster QR Meja Ulasan Pelanggan - MieAyamin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #d97706;
+      --primary-dark: #b45309;
+      --bg-canvas: #f8fafc;
+      --card-white: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .top-actions {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: #ffffff; color: var(--text-main); border-color: var(--border-color); }
+    .btn-secondary:hover { background: #f1f5f9; }
+
+    /* Printable Table Stand Poster Card */
+    .table-stand-card {
+      width: 420px;
+      background: #ffffff;
+      border: 2px solid var(--border-color);
+      border-top: 6px solid var(--primary);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-header { margin-bottom: 20px; }
+    .brand-icon { font-size: 3.5rem; line-height: 1; margin-bottom: 6px; }
+    .brand-title { font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: -0.03em; }
+    .brand-sub { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+
+    .tagline-box {
+      background: #fef3c7;
+      border-left: 4px solid var(--primary);
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin: 16px 0 24px 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #92400e;
+    }
+
+    .qr-frame {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 16px;
+      border: 2px solid var(--border-color);
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .qr-frame:hover { transform: scale(1.03); }
+
+    .instruction-text {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+    .sub-instruction {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .table-number-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 8px 24px;
+      border-radius: 99px;
+    }
+
+    /* Modal Feedback Form */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      padding: 28px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    .modal-card h3 {
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 10px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    .star-rating span {
+      transition: transform 0.1s;
+      opacity: 0.3;
+    }
+    .star-rating span.selected,
+    .star-rating span:hover {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0;
+        justify-content: flex-start;
+      }
+      .top-actions, .modal-overlay { display: none !important; }
+      .table-stand-card {
+        border: 2px solid #000 !important;
+        border-top: 6px solid #000 !important;
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 450px !important;
+        margin: 20px auto;
+      }
+      .brand-title { color: #000 !important; }
+      .tagline-box { background: #f1f5f9 !important; color: #000 !important; border-left-color: #000 !important; }
+      .table-number-badge { background: #000 !important; color: #fff !important; }
+      .sub-instruction { color: #555 !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Actions Bar -->
+  <div class="top-actions">
+    <button class="btn btn-primary" onclick="window.print()">
+      <span>🖨️ Cetak Poster (Print)</span>
+    </button>
+    <button class="btn btn-secondary" onclick="openFeedbackModal()">
+      <span>📱 Simulasi Scan QR Pelanggan</span>
+    </button>
+  </div>
+
+  <!-- Table Stand Poster Printable Card -->
+  <div class="table-stand-card">
+    <div class="brand-header">
+      <div class="brand-icon">🍜</div>
+      <h1 class="brand-title">MieAyamin</h1>
+      <p class="brand-sub">Spesialis Mie Ayam & Yamin Otentik</p>
+    </div>
+
+    <div class="tagline-box">
+      "Kepuasan Anda Adalah Kebanggaan Kami"
+    </div>
+
+    <!-- Stylized Scan QR Code -->
+    <div class="qr-frame" onclick="openFeedbackModal()" title="Klik untuk simulasi scan QR">
+      <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" fill="white"/>
+        <!-- Corner Markers -->
+        <rect x="8" y="8" width="28" height="28" fill="#0f172a"/>
+        <rect x="13" y="13" width="18" height="18" fill="white"/>
+        <rect x="17" y="17" width="10" height="10" fill="#d97706"/>
+
+        <rect x="64" y="8" width="28" height="28" fill="#0f172a"/>
+        <rect x="69" y="13" width="18" height="18" fill="white"/>
+        <rect x="73" y="17" width="10" height="10" fill="#d97706"/>
+
+        <rect x="8" y="64" width="28" height="28" fill="#0f172a"/>
+        <rect x="13" y="69" width="18" height="18" fill="white"/>
+        <rect x="17" y="73" width="10" height="10" fill="#d97706"/>
+
+        <!-- Pattern Blocks -->
+        <rect x="42" y="12" width="12" height="12" fill="#0f172a"/>
+        <rect x="42" y="30" width="8" height="18" fill="#0f172a"/>
+        <rect x="12" y="42" width="18" height="12" fill="#0f172a"/>
+        <rect x="44" y="44" width="12" height="12" fill="#d97706"/>
+        <rect x="62" y="42" width="26" height="8" fill="#0f172a"/>
+        <rect x="74" y="54" width="14" height="14" fill="#0f172a"/>
+        <rect x="42" y="64" width="16" height="12" fill="#0f172a"/>
+        <rect x="64" y="72" width="24" height="16" fill="#0f172a"/>
+      </svg>
+    </div>
+
+    <div class="instruction-text">SCAN QR UNTUK ULASAN & KOMPLAIN</div>
+    <p class="sub-instruction">Arahkan kamera HP Anda untuk memberikan ulasan atau saran langsung ke Owner Warung</p>
+
+    <div class="table-number-badge">
+      MEJA WARUNG
+    </div>
+  </div>
+
+  <!-- Interactive Feedback Modal -->
+  <div class="modal-overlay" id="feedbackModal">
+    <div class="modal-card">
+      <h3>Formulir Ulasan & Komplain</h3>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Bantu kami meningkatkan kualitas hidangan & pelayanan MieAyamin.</p>
+
+      <form id="qrFeedbackForm">
+        <div class="form-group">
+          <label>Pilih Meja Anda</label>
+          <select id="fbTableSelect" class="form-control" required>
+            <option value="Meja 01">Meja 01</option>
+            <option value="Meja 02">Meja 02</option>
+            <option value="Meja 03">Meja 03</option>
+            <option value="Meja 04" selected>Meja 04</option>
+            <option value="Meja 05">Meja 05</option>
+            <option value="Meja 06">Meja 06</option>
+            <option value="Meja 07">Meja 07</option>
+            <option value="Meja 08">Meja 08</option>
+            <option value="Meja 09">Meja 09</option>
+            <option value="Meja 10">Meja 10</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Penilaian / Rating</label>
+          <div class="star-rating" id="starRating">
+            <span data-val="1">⭐</span>
+            <span data-val="2">⭐</span>
+            <span data-val="3">⭐</span>
+            <span data-val="4">⭐</span>
+            <span data-val="5" class="selected">⭐</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Kategori Ulasan</label>
+          <select id="fbCategory" class="form-control" required>
+            <option value="Makanan & Rasa">Makanan & Rasa Mie Ayam</option>
+            <option value="Pelayanan Kasir/Pelayan">Pelayanan Kasir / Pelayan</option>
+            <option value="Kebersihan & Tempat">Kebersihan & Kenikmatan Tempat</option>
+            <option value="Harga & Porsi">Harga & Porsi Menu</option>
+            <option value="Lainnya">Lainnya / Saran Umum</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Isi Ulasan / Komplain / Saran</label>
+          <textarea id="fbComment" class="form-control" rows="3" placeholder="Tuliskan ulasan jujur atau komplain Anda..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Nomor Telepon / WhatsApp (Opsional)</label>
+          <input type="text" id="fbContact" class="form-control" placeholder="Contoh: 0812-3456-7890">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" style="flex:1;" onclick="closeFeedbackModal()">Batal</button>
+          <button type="submit" class="btn btn-primary" style="flex:2;">Kirim Ulasan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let currentRating = 5;
+
+    function openFeedbackModal() {
+      document.getElementById('feedbackModal').classList.add('active');
+    }
+
+    function closeFeedbackModal() {
+      document.getElementById('feedbackModal').classList.remove('active');
+    }
+
+    // Star Rating Interactivity
+    const stars = document.querySelectorAll('#starRating span');
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        currentRating = parseInt(star.dataset.val);
+        stars.forEach(s => {
+          if (parseInt(s.dataset.val) <= currentRating) {
+            s.classList.add('selected');
+          } else {
+            s.classList.remove('selected');
+          }
+        });
+      });
+    });
+
+    // Form Submit Handler
+    document.getElementById('qrFeedbackForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const table = document.getElementById('fbTableSelect').value;
+      const category = document.getElementById('fbCategory').value;
+      const comment = document.getElementById('fbComment').value.trim();
+      const contact = document.getElementById('fbContact').value.trim();
+
+      const existingFeedback = JSON.parse(localStorage.getItem('mya_feedback')) || [];
+
+      const newFeedback = {
+        id: 'fb-' + Date.now(),
+        date: new Date().toLocaleString('id-ID'),
+        table: table,
+        rating: currentRating,
+        category: category,
+        comment: comment,
+        contact: contact,
+        status: 'Belum Dibaca'
+      };
+
+      existingFeedback.unshift(newFeedback);
+      localStorage.setItem('mya_feedback', JSON.stringify(existingFeedback));
+
+      alert('✅ Terima Kasih! Ulasan & saran Anda telah berhasil dikirim langsung ke Owner MieAyamin.');
+      closeFeedbackModal();
+      document.getElementById('qrFeedbackForm').reset();
+    });
+  </script>
+</body>
+</html>
