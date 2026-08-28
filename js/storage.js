@@ -324,7 +324,7 @@
         taxRate: parsed.taxRate || 0,
         kdsOrders: parsed.kdsOrders || generateInitialKdsOrders(),
         transactions: parsed.transactions || generateInitialTransactions(),
-        closingReports: parsed.closingReports || [],
+        closingReports: (parsed.closingReports && parsed.closingReports.length > 0) ? parsed.closingReports : generateInitialClosingReports(),
         feedbacks: parsed.feedbacks || generateInitialFeedbacks()
       };
       
@@ -349,6 +349,7 @@
       taxRate: 0,
       kdsOrders: generateInitialKdsOrders(),
       transactions: generateInitialTransactions(),
+      closingReports: generateInitialClosingReports(),
       feedbacks: generateInitialFeedbacks()
     };
     saveState(initState);
@@ -572,6 +573,26 @@
       console.error(err);
       showToast('Gagal restore data: ' + err.message, 'danger');
     }
+  }
+
+  function generateInitialClosingReports() {
+    const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    return [
+      {
+        id: 'CLS-1700000001',
+        date: todayStr,
+        time: '20:00',
+        cashier: 'Kasir Shift 1',
+        totalOmset: 69000,
+        expectedCash: 40000,
+        actualCash: 40000,
+        diff: 0,
+        qrisTotal: 29000,
+        transferTotal: 0,
+        txCount: 2,
+        status: 'Sesuai'
+      }
+    ];
   }
 
   // Export Storage API globally
