@@ -605,6 +605,73 @@ body {
 .summary-line.total-line { font-size: 1.15rem; font-weight: 800; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-color); }
 .text-primary { color: var(--primary); }
 
+/* DATA TABLES & RESPONSIVE CONTAINER SYSTEM */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.data-table th {
+  background: var(--bg-card-subtle);
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 14px 16px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(248, 250, 252, 0.8);
+}
+
+.data-table .text-left { text-align: left; }
+.data-table .text-right { text-align: right; }
+.data-table .text-center { text-align: center; }
+
+/* BADGES ENHANCEMENTS */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.badge-success { background: var(--success-light); color: #047857; border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-warning { background: var(--primary-light); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-danger { background: var(--danger-light); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.3); }
+.badge-info { background: var(--info-light); color: #1d4ed8; border: 1px solid rgba(59, 130, 246, 0.3); }
+.badge-secondary { background: #f1f5f9; color: #475569; border: 1px solid var(--border-color); }
+
 /* MODALS */
 .modal-overlay {
   position: fixed;

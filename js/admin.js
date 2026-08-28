@@ -167,16 +167,18 @@
     } else {
       txTable.innerHTML = filtered.map(tx => `
         <tr>
-          <td><strong>${tx.id}</strong></td>
-          <td><small>${tx.date} ${tx.time}</small></td>
-          <td><span class="badge badge-secondary">${tx.type}</span></td>
-          <td>${tx.customer} (${tx.table})</td>
-          <td><strong>${formatRp(tx.total)}</strong></td>
-          <td><span class="badge ${tx.method === 'QRIS' ? 'badge-info' : 'badge-success'}">${tx.method}</span></td>
-          <td><span class="badge badge-success">${tx.status}</span></td>
-          <td style="display:flex; gap:6px;">
-            <button class="btn btn-primary btn-sm btn-admin-detail" data-id="${tx.id}">Detail</button>
-            <button class="btn btn-secondary btn-sm btn-admin-reprint" data-id="${tx.id}">Struk</button>
+          <td class="text-left"><strong>${tx.id}</strong></td>
+          <td class="text-left"><small class="text-muted">${tx.date} ${tx.time}</small></td>
+          <td class="text-left"><span class="badge badge-secondary">${tx.type}</span></td>
+          <td class="text-left"><strong>${tx.customer}</strong> <small class="text-muted">(${tx.table})</small></td>
+          <td class="text-right"><strong style="color:var(--primary); font-size:0.95rem;">${formatRp(tx.total)}</strong></td>
+          <td class="text-center"><span class="badge ${tx.method === 'QRIS' ? 'badge-info' : 'badge-success'}">${tx.method}</span></td>
+          <td class="text-center"><span class="badge badge-success">${tx.status}</span></td>
+          <td class="text-right">
+            <div style="display:flex; justify-content:flex-end; gap:6px;">
+              <button class="btn btn-primary btn-sm btn-admin-detail" data-id="${tx.id}">Detail</button>
+              <button class="btn btn-secondary btn-sm btn-admin-reprint" data-id="${tx.id}">Struk</button>
+            </div>
           </td>
         </tr>
       `).join('');
@@ -218,14 +220,14 @@
 
       return `
         <tr>
-          <td><strong>${dateDisplay}</strong></td>
-          <td><span class="badge badge-secondary">${r.cashier || 'Kasir'}</span></td>
-          <td><strong style="color:var(--primary);">${formatRp(r.totalOmset)}</strong></td>
-          <td>${formatRp(r.expectedCash)}</td>
-          <td><strong>${formatRp(r.actualCash)}</strong></td>
-          <td><span style="font-weight:700; color:${r.diff === 0 ? '#047857' : (r.diff > 0 ? '#3b82f6' : '#dc2626')}">${formatRp(r.diff)}</span></td>
-          <td>${statusBadge}</td>
-          <td>
+          <td class="text-left"><strong>${dateDisplay}</strong></td>
+          <td class="text-left"><span class="badge badge-secondary">${r.cashier || 'Kasir'}</span></td>
+          <td class="text-right"><strong style="color:var(--primary); font-size:0.95rem;">${formatRp(r.totalOmset)}</strong></td>
+          <td class="text-right">${formatRp(r.expectedCash)}</td>
+          <td class="text-right"><strong>${formatRp(r.actualCash)}</strong></td>
+          <td class="text-right"><span style="font-weight:700; color:${r.diff === 0 ? '#047857' : (r.diff > 0 ? '#3b82f6' : '#dc2626')}">${formatRp(r.diff)}</span></td>
+          <td class="text-center">${statusBadge}</td>
+          <td class="text-right">
             <button class="btn btn-primary btn-sm btn-admin-cs-detail" data-id="${r.id}">🔍 Detail</button>
           </td>
         </tr>
@@ -395,7 +397,7 @@
 
   // --- KELOLA STOK & BAHAN BAKU (FULL CRUD) ---
   function renderStockTable() {
-    const tbody = document.getElementById('stockTableBody');
+    const tbody = document.getElementById('stockTableBody') || document.getElementById('adminStockTableBody');
     if (!tbody) return;
 
     if (!state.stock) state.stock = JSON.parse(JSON.stringify(window.POSStorage.DEFAULT_INGREDIENTS));
@@ -403,30 +405,33 @@
 
     tbody.innerHTML = Object.keys(stockData).map(key => {
       const item = stockData[key];
-      const isLow = item.stock <= item.minStock;
+      let statusBadge = '<span class="badge badge-success">🟢 Aman</span>';
+      if (item.stock === 0) {
+        statusBadge = '<span class="badge badge-danger">🔴 Habis</span>';
+      } else if (item.stock <= item.minStock) {
+        statusBadge = '<span class="badge badge-warning">🟡 Menipis</span>';
+      }
 
       return `
         <tr>
-          <td><strong>${item.name}</strong></td>
-          <td>
-            <div style="display:flex; align-items:center; gap:8px;">
+          <td class="text-left"><strong>${item.name}</strong></td>
+          <td class="text-center">
+            <div style="display:inline-flex; align-items:center; justify-content:center; gap:8px;">
               <button class="btn-qty btn-quick-sub-stock" data-key="${key}" style="width:28px; height:28px; border-radius:6px; border:1px solid var(--border-color); background:#fff; font-weight:800; cursor:pointer;">-</button>
-              <strong style="color: ${isLow ? 'var(--danger)' : 'var(--text-main)'}; font-size:1.1rem; min-width:60px; text-align:center;">
+              <strong style="color: ${item.stock <= item.minStock ? 'var(--danger)' : 'var(--text-main)'}; font-size:1rem; min-width:60px; text-align:center;">
                 ${item.stock} ${item.unit}
               </strong>
               <button class="btn-qty btn-quick-add-stock" data-key="${key}" style="width:28px; height:28px; border-radius:6px; border:1px solid var(--border-color); background:#fff; font-weight:800; cursor:pointer;">+</button>
             </div>
           </td>
-          <td><small class="text-muted">Batas Minimal: ${item.minStock} ${item.unit}</small></td>
-          <td>
-            ${isLow
-              ? '<span class="badge badge-danger">Stok Menipis</span>'
-              : '<span class="badge badge-success">Aman</span>'}
-          </td>
-          <td style="display:flex; gap:6px;">
-            <button class="btn btn-secondary btn-sm btn-restock-ten" data-key="${key}">Restock +10</button>
-            <button class="btn btn-secondary btn-sm btn-edit-stock-details" data-key="${key}">Edit</button>
-            <button class="btn btn-secondary btn-sm btn-delete-stock" data-key="${key}" style="color:var(--danger); border-color:#fee2e2; background:#fff5f5;">Hapus</button>
+          <td class="text-right"><strong style="color:var(--text-muted); font-size:0.88rem;">${item.minStock} ${item.unit}</strong></td>
+          <td class="text-center">${statusBadge}</td>
+          <td class="text-right">
+            <div style="display:flex; justify-content:flex-end; gap:6px;">
+              <button class="btn btn-secondary btn-sm btn-restock-ten" data-key="${key}">+ Restock</button>
+              <button class="btn btn-secondary btn-sm btn-edit-stock-details" data-key="${key}">Edit</button>
+              <button class="btn btn-secondary btn-sm btn-delete-stock" data-key="${key}" style="color:var(--danger); border-color:#fee2e2; background:#fff5f5;">Hapus</button>
+            </div>
           </td>
         </tr>
       `;
@@ -560,22 +565,27 @@
 
   // --- CUSTOMER REVIEWS FEEDBACK ---
   function renderFeedbackTable() {
-    const tbody = document.getElementById('feedbackTableBody');
+    const tbody = document.getElementById('feedbackTableBody') || document.getElementById('adminFeedbackTableBody');
     if (!tbody) return;
 
     const feedbacks = state.feedbacks || [];
     if (feedbacks.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted" style="padding:20px;">Belum ada ulasan dari pelanggan</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted" style="padding:20px;">Belum ada ulasan dari pelanggan</td></tr>`;
       return;
     }
 
     tbody.innerHTML = feedbacks.map(fb => `
       <tr>
-        <td><small>${fb.date}</small></td>
-        <td><strong>${fb.name}</strong> <small class="text-muted">(${fb.table || 'Meja Umum'})</small></td>
-        <td><span style="color:#f59e0b; font-weight:700;">${'⭐'.repeat(fb.rating)} (${fb.rating}/5)</span></td>
-        <td>"${fb.review}"</td>
-        <td><span class="badge badge-success">Terverifikasi</span></td>
+        <td class="text-left">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <strong style="font-size:0.95rem;">${fb.name}</strong>
+            <span class="badge badge-success" style="font-size:0.7rem; padding:2px 8px;">✓ Terverifikasi</span>
+          </div>
+          <small class="text-muted">${fb.table || 'Meja Umum'}</small>
+        </td>
+        <td class="text-left"><small class="text-muted" style="font-weight:600;">${fb.date}</small></td>
+        <td class="text-center"><span style="color:#f59e0b; font-weight:800; font-size:0.9rem;">${'⭐'.repeat(fb.rating)}</span> <small class="text-muted">(${fb.rating}/5)</small></td>
+        <td class="text-left" style="white-space:normal; max-width:400px; line-height:1.4;">"${fb.review}"</td>
       </tr>
     `).join('');
   }
