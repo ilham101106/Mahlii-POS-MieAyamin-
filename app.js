@@ -218,12 +218,12 @@
     },
     {
       id: 'top-4',
-      name: 'Extra Telur Puyuh Semur (3 pcs)',
+      name: 'Extra Ceker Pedas (3 pcs)',
       cat: 'topping',
-      price: 5000,
-      image: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=500&q=80',
-      desc: 'Telur puyuh bumbu semur gurih manis.',
-      ingredients: [{ id: 'telur_puyuh', qty: 3 }]
+      price: 6000,
+      image: 'images/ceker_pedas.png',
+      desc: 'Ceker ayam empuk bumbu pedas mercon meresap.',
+      ingredients: [{ id: 'ceker', qty: 3 }]
     },
     // Aneka Kerupuk Category
     {
@@ -273,7 +273,7 @@
     { id: 'top_pangsit', name: 'Extra Pangsit Goreng', price: 3000 },
     { id: 'top_bakso', name: 'Extra Bakso Sapi (1 pcs)', price: 3000 },
     { id: 'top_ceker', name: 'Extra Ceker Semur (1 pcs)', price: 3000 },
-    { id: 'top_puyuh', name: 'Extra Telur Puyuh (2 pcs)', price: 3000 }
+    { id: 'top_ceker_pedas', name: 'Extra Ceker Pedas (1 pcs)', price: 3000 }
   ];
 
   const DEFAULT_SETTINGS = {

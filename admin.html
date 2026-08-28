@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MieAyamin POS - Mode Owner & Admin Dashboard</title>
+  <!-- PWA & iOS Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#d97706">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MieAyamin POS">
+  <link rel="apple-touch-icon" href="images/icon.svg">
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,6 +50,12 @@
     }
     .admin-tab-page { display: none; }
     .admin-tab-page.active { display: block; }
+    @media (max-width: 900px) {
+      .admin-layout { flex-direction: column; }
+      .admin-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); padding: 10px; flex-direction: row; overflow-x: auto; white-space: nowrap; }
+      .admin-nav-item { flex-shrink: 0; padding: 8px 12px; margin-bottom: 0; }
+      .admin-content { padding: 12px; }
+    }
   </style>
 </head>
 <body>
@@ -279,10 +292,17 @@
           </div>
           <div class="card" style="background:var(--bg-card); padding:20px; border-radius:18px; border:1px solid var(--border-color);">
             <h3>💾 Backup & Restore Data</h3>
-            <p class="text-muted">Simpan file cadangan transaksi dan stok ke komputer Anda.</p>
-            <div style="display:flex; gap:10px; margin-top:12px;">
-              <button class="btn btn-primary" onclick="alert('Data berhasil di-backup ke file JSON!')">Export JSON Backup</button>
-              <button class="btn btn-secondary" onclick="alert('Silakan pilih file JSON cadangan untuk memulihkan data.')">Import Backup</button>
+            <p class="text-muted">Simpan file cadangan transaksi dan stok ke perangkat Anda atau pulihkan data dari file JSON.</p>
+            <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+              <button class="btn btn-primary" id="btnExportBackup" onclick="window.POSStorage.exportBackup()">💾 Export JSON Backup</button>
+              <button class="btn btn-secondary" id="btnImportBackup" onclick="document.getElementById('importBackupFileInput').click()">📂 Restore Backup</button>
+              <input type="file" id="importBackupFileInput" accept=".json" style="display:none;" onchange="
+                if (this.files &amp;&amp; this.files[0]) {
+                  const reader = new FileReader();
+                  reader.onload = (e) => window.POSStorage.importBackup(e.target.result);
+                  reader.readAsText(this.files[0]);
+                }
+              ">
             </div>
           </div>
         </div>
@@ -435,7 +455,7 @@
       <div class="modal-body">
         <div class="form-group" style="margin-bottom:12px;">
           <label style="font-weight:700; font-size:0.85rem; display:block; margin-bottom:4px;">Nama Menu Produk</label>
-          <input type="text" id="newMenuName" placeholder="Contoh: Mie Ayam Special Telur Puyuh" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border-color); font-weight:700;">
+          <input type="text" id="newMenuName" placeholder="Contoh: Mie Ayam Special Ceker Pedas" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border-color); font-weight:700;">
         </div>
         <div class="form-group" style="margin-bottom:12px;">
           <label style="font-weight:700; font-size:0.85rem; display:block; margin-bottom:4px;">Kategori POS</label>
@@ -510,5 +530,16 @@
 
   <script src="js/storage.js"></script>
   <script src="js/admin.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          console.log('PWA ServiceWorker registered:', reg.scope);
+        }).catch((err) => {
+          console.log('ServiceWorker registration failed:', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>

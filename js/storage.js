@@ -210,12 +210,12 @@
     },
     {
       id: 'top-4',
-      name: 'Extra Telur Puyuh Semur (3 pcs)',
+      name: 'Extra Ceker Pedas (3 pcs)',
       cat: 'topping',
-      price: 5000,
-      image: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=500&q=80',
-      desc: 'Telur puyuh bumbu semur gurih manis.',
-      ingredients: [{ id: 'telur_puyuh', qty: 3 }]
+      price: 6000,
+      image: 'images/ceker_pedas.png',
+      desc: 'Ceker ayam empuk bumbu pedas mercon meresap.',
+      ingredients: [{ id: 'ceker', qty: 3 }]
     },
     {
       id: 'samp-1',
@@ -271,6 +271,29 @@
       const saved = localStorage.getItem(STORAGE_KEY);
       if (!saved) return initializeDefaultState();
       const parsed = JSON.parse(saved);
+
+      // Auto-migrate legacy pig photo / telur puyuh menu to Ceker Pedas
+      if (Array.isArray(parsed.customMenu)) {
+        let modified = false;
+        parsed.customMenu = parsed.customMenu.map(item => {
+          if (item.id === 'top-4' || (item.name && item.name.includes('Telur Puyuh')) || (item.image && item.image.includes('photo-1516467508483-a7212febe31a'))) {
+            modified = true;
+            return {
+              ...item,
+              name: 'Extra Ceker Pedas (3 pcs)',
+              cat: 'topping',
+              price: 6000,
+              image: 'images/ceker_pedas.png',
+              desc: 'Ceker ayam empuk bumbu pedas mercon meresap.',
+              ingredients: [{ id: 'ceker', qty: 3 }]
+            };
+          }
+          return item;
+        });
+        if (modified) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        }
+      }
       return {
         role: parsed.role || 'Kasir',
         customMenu: parsed.customMenu || JSON.parse(JSON.stringify(DEFAULT_MENU)),
@@ -497,6 +520,38 @@
     }
   }
 
+  function exportBackup() {
+    try {
+      const state = loadState();
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const today = new Date().toISOString().slice(0, 10);
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `backup_pos_mieayamin_${today}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Backup data berhasil diunduh ke file JSON!', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Gagal mengunduh backup data: ' + err.message, 'danger');
+    }
+  }
+
+  function importBackup(jsonText, onSuccess) {
+    try {
+      const parsed = JSON.parse(jsonText);
+      if (!parsed || typeof parsed !== 'object') throw new Error('Format file backup JSON tidak valid');
+      saveState(parsed);
+      showToast('Data berhasil dipulihkan (Restore Success)!', 'success');
+      if (typeof onSuccess === 'function') onSuccess(parsed);
+      setTimeout(() => location.reload(), 1000);
+    } catch (err) {
+      console.error(err);
+      showToast('Gagal restore data: ' + err.message, 'danger');
+    }
+  }
+
   // Export Storage API globally
   window.POSStorage = {
     STORAGE_KEY,
@@ -504,6 +559,8 @@
     DEFAULT_INGREDIENTS,
     loadState,
     saveState,
+    exportBackup,
+    importBackup,
     formatRp,
     formatDateTime,
     showToast,

@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MieAyamin POS - Mode Dapur (Kitchen Display System)</title>
+  <!-- PWA & iOS Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#d97706">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MieAyamin POS">
+  <link rel="apple-touch-icon" href="images/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -66,6 +73,13 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 18px;
+    }
+    @media (max-width: 900px) {
+      .kds-header-bar { flex-direction: column; align-items: stretch; gap: 10px; padding: 10px 14px; }
+      .kds-filters { padding: 10px 14px; overflow-x: auto; flex-wrap: nowrap; }
+      .kds-filter-btn { flex-shrink: 0; padding: 6px 14px; font-size: 0.8rem; }
+      .kds-container { padding: 12px; }
+      .kds-grid { grid-template-columns: 1fr; }
     }
 
     /* KDS Order Cards */
@@ -239,5 +253,16 @@
 
   <script src="js/storage.js"></script>
   <script src="js/dapur.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          console.log('PWA ServiceWorker registered:', reg.scope);
+        }).catch((err) => {
+          console.log('ServiceWorker registration failed:', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>

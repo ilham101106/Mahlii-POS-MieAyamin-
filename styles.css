@@ -635,3 +635,152 @@ body {
 /* TOASTS */
 .toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; }
 .toast { background: var(--text-main); color: #ffffff; padding: 12px 18px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 8px; }
+
+/* ==========================================================================
+   MOBILE & IPHONE 15 RESPONSIVE ADAPTABILITY
+   ========================================================================== */
+
+/* Prevent horizontal overflow globally */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* iOS iPhone Safe Area Padding */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+@media (max-width: 900px) {
+  /* 1. Header Layout Adaptability */
+  .app-header {
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .header-brand {
+    justify-content: space-between;
+  }
+
+  .brand-info h1 {
+    font-size: 1.1rem;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  .header-center {
+    justify-content: center;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .header-actions .btn, .header-actions .role-badge {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+
+  /* 2. Hide Left Sidebar on Mobile/Tablet Screens */
+  .app-sidebar {
+    display: none !important;
+  }
+
+  .app-container {
+    flex-direction: column;
+  }
+
+  .app-content {
+    padding: 10px;
+  }
+
+  /* 3. POS Split Layout to Single Column Stack */
+  .pos-layout {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  /* 4. Cart Panel on Mobile */
+  .cart-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    position: relative !important;
+    top: 0 !important;
+  }
+
+  /* 5. Menu Grid on Mobile (2 items per row) */
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .menu-card-body {
+    padding: 10px !important;
+  }
+
+  .menu-title {
+    font-size: 0.88rem !important;
+  }
+
+  .menu-price {
+    font-size: 0.85rem !important;
+  }
+
+  .menu-img-wrapper {
+    height: 110px !important;
+  }
+
+  .category-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cat-tab {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+  }
+
+  .quick-cash-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .modal-card {
+    max-width: 95% !important;
+    margin: 10px auto;
+  }
+
+  .meta-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .catalog-header-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .view-toggle-btns {
+    align-self: flex-end;
+  }
+}
+
+
