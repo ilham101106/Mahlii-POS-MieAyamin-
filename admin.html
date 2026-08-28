@@ -444,6 +444,57 @@
     </div>
   </div>
 
+  <!-- MODAL: DETAIL LAPORAN CLOSING SHIFT -->
+  <div class="modal-overlay" id="csDetailModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🔒 Detail Info Laporan Closing Shift</h3>
+        <button class="btn-close" id="btnCloseCsDetail">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:var(--bg-card-subtle); padding:14px 16px; border-radius:12px; margin-bottom:14px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 id="csdDateTime" style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin:0;">28 Agustus 2026 (20.50)</h4>
+            <small id="csdCashier" class="text-muted" style="font-weight:600;">Kasir: Shift 1</small>
+          </div>
+          <span id="csdStatusBadge" class="badge badge-success">Sesuai (Rp 0)</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:12px; border-radius:12px;">
+            <small class="text-muted" style="font-weight:700; font-size:0.75rem; display:block;">TOTAL OMSET PENJUALAN</small>
+            <strong id="csdTotalOmset" style="color:var(--primary); font-size:1.2rem;">Rp 0</strong>
+          </div>
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:12px; border-radius:12px;">
+            <small class="text-muted" style="font-weight:700; font-size:0.75rem; display:block;">TRANSAKSI & PORSI TERJUAL</small>
+            <strong id="csdTxCount" style="color:var(--text-main); font-size:0.95rem;">0 Transaksi (0 Porsi)</strong>
+          </div>
+        </div>
+
+        <div class="checkout-summary-box" style="background:#ffffff; padding:14px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:14px;">
+          <div style="font-weight:800; font-size:0.82rem; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;">Rincian Metode Pembayaran:</div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.9rem;"><span>💵 Total Tunai (Sistem):</span><strong id="csdTotalCash">Rp 0</strong></div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.9rem;"><span>📱 Total QRIS:</span><strong id="csdTotalQris" style="color:#3b82f6;">Rp 0</strong></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.9rem;"><span>🏦 Total Transfer Bank:</span><strong id="csdTotalTransfer" style="color:#8b5cf6;">Rp 0</strong></div>
+        </div>
+
+        <div style="background:#fef3c7; border:1px solid #f59e0b; padding:14px; border-radius:12px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-size:0.88rem; font-weight:700; color:#b45309;">Setoran Uang Fisik Kasir (LACI):</span>
+            <strong id="csdActualCash" style="font-size:1.1rem; color:#b45309;">Rp 0</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:8px 12px; border-radius:8px; border:1px solid var(--border-color);">
+            <span style="font-size:0.85rem; font-weight:700; color:var(--text-muted);">Status Selisih Kasir:</span>
+            <strong id="csdDiffVal" style="font-size:1rem; color:#047857;">Rp 0 (Sesuai)</strong>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnFinishCsDetail">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: OWNER PIN VERIFICATION -->
   <div class="modal-overlay" id="ownerPinModal">
     <div class="modal-card modal-sm">

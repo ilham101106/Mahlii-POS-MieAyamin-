@@ -196,7 +196,7 @@
 
     const reports = state.closingReports || [];
     if (reports.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-muted" style="padding:20px;">Belum ada laporan closing shift kasir yang tercatat</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding:20px;">Belum ada laporan closing shift kasir yang tercatat</td></tr>`;
       return;
     }
 
@@ -205,18 +205,31 @@
       if (r.diff > 0) statusBadge = `<span class="badge badge-info">+${formatRp(r.diff)} (Lebih)</span>`;
       else if (r.diff < 0) statusBadge = `<span class="badge badge-danger">${formatRp(r.diff)} (Selisih)</span>`;
 
+      const dateDisplay = r.fullDateTime || `${r.date} (${r.time})`;
+
       return `
         <tr>
-          <td><strong>${r.date}</strong> <small class="text-muted">${r.time}</small></td>
+          <td><strong>${dateDisplay}</strong></td>
           <td><span class="badge badge-secondary">${r.cashier || 'Kasir'}</span></td>
           <td><strong style="color:var(--primary);">${formatRp(r.totalOmset)}</strong></td>
           <td>${formatRp(r.expectedCash)}</td>
           <td><strong>${formatRp(r.actualCash)}</strong></td>
           <td><span style="font-weight:700; color:${r.diff === 0 ? '#047857' : (r.diff > 0 ? '#3b82f6' : '#dc2626')}">${formatRp(r.diff)}</span></td>
           <td>${statusBadge}</td>
+          <td>
+            <button class="btn btn-primary btn-sm btn-admin-cs-detail" data-id="${r.id}">🔍 Detail</button>
+          </td>
         </tr>
       `;
     }).join('');
+
+    tableBody.querySelectorAll('.btn-admin-cs-detail').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const target = reports.find(r => r.id === id);
+        if (target) openCsDetailModal(target);
+      });
+    });
   }
 
   // --- KELOLA MENU PRODUK (FULL CRUD: CREATE, READ, UPDATE, DELETE) ---
@@ -641,6 +654,71 @@
     }
   }
 
+  // --- DETAIL LAPORAN CLOSING MODAL IN ADMIN ---
+  function openCsDetailModal(r) {
+    const modal = document.getElementById('csDetailModal');
+    if (!modal) return;
+
+    const elDate = document.getElementById('csdDateTime');
+    const elCashier = document.getElementById('csdCashier');
+    const elBadge = document.getElementById('csdStatusBadge');
+    const elOmset = document.getElementById('csdTotalOmset');
+    const elTxCount = document.getElementById('csdTxCount');
+    const elCash = document.getElementById('csdTotalCash');
+    const elQris = document.getElementById('csdTotalQris');
+    const elTransfer = document.getElementById('csdTotalTransfer');
+    const elActual = document.getElementById('csdActualCash');
+    const elDiff = document.getElementById('csdDiffVal');
+
+    const dateDisplay = r.fullDateTime || `${r.date} (${r.time})`;
+    if (elDate) elDate.textContent = dateDisplay;
+    if (elCashier) elCashier.textContent = `Kasir: ${r.cashier || 'Kasir'}`;
+
+    if (elBadge) {
+      if (r.diff === 0) {
+        elBadge.className = 'badge badge-success';
+        elBadge.textContent = 'Sesuai (Rp 0)';
+      } else if (r.diff > 0) {
+        elBadge.className = 'badge badge-info';
+        elBadge.textContent = `+${formatRp(r.diff)} (Uang Lebih)`;
+      } else {
+        elBadge.className = 'badge badge-danger';
+        elBadge.textContent = `${formatRp(r.diff)} (Uang Kurang/Selisih)`;
+      }
+    }
+
+    if (elOmset) elOmset.textContent = formatRp(r.totalOmset);
+    if (elTxCount) elTxCount.textContent = `${r.txCount || 0} Transaksi (${r.totalItemsSold || 0} Porsi Terjual)`;
+    if (elCash) elCash.textContent = formatRp(r.expectedCash);
+    if (elQris) elQris.textContent = formatRp(r.qrisTotal || 0);
+    if (elTransfer) elTransfer.textContent = formatRp(r.transferTotal || 0);
+    if (elActual) elActual.textContent = formatRp(r.actualCash);
+
+    if (elDiff) {
+      if (r.diff === 0) {
+        elDiff.textContent = 'Rp 0 (Sesuai / Pas)';
+        elDiff.style.color = '#047857';
+      } else if (r.diff > 0) {
+        elDiff.textContent = `+${formatRp(r.diff)} (Uang Lebih)`;
+        elDiff.style.color = '#3b82f6';
+      } else {
+        elDiff.textContent = `${formatRp(r.diff)} (Selisih Kurang)`;
+        elDiff.style.color = '#dc2626';
+      }
+    }
+
+    modal.classList.add('active');
+    modal.style.setProperty('display', 'flex', 'important');
+  }
+
+  function closeCsDetailModal() {
+    const modal = document.getElementById('csDetailModal');
+    if (modal) {
+      modal.classList.remove('active');
+      modal.style.setProperty('display', 'none', 'important');
+    }
+  }
+
   // --- ADMIN EVENT BINDINGS ---
   function bindAdminEvents() {
     document.querySelectorAll('.admin-nav-item').forEach(item => {
@@ -720,11 +798,15 @@
     const btnFinishTxDetail = document.getElementById('btnFinishTxDetail');
     const btnCloseReceipt = document.getElementById('btnCloseReceipt');
     const btnFinishReceipt = document.getElementById('btnFinishReceipt');
+    const btnCloseCsDetail = document.getElementById('btnCloseCsDetail');
+    const btnFinishCsDetail = document.getElementById('btnFinishCsDetail');
 
     if (btnCloseTxDetail) btnCloseTxDetail.addEventListener('click', closeTxDetailModal);
     if (btnFinishTxDetail) btnFinishTxDetail.addEventListener('click', closeTxDetailModal);
     if (btnCloseReceipt) btnCloseReceipt.addEventListener('click', closeReceiptModal);
     if (btnFinishReceipt) btnFinishReceipt.addEventListener('click', closeReceiptModal);
+    if (btnCloseCsDetail) btnCloseCsDetail.addEventListener('click', closeCsDetailModal);
+    if (btnFinishCsDetail) btnFinishCsDetail.addEventListener('click', closeCsDetailModal);
   }
 
 })();

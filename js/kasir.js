@@ -824,6 +824,7 @@
     let totalCash = 0;
     let totalQris = 0;
     let totalTransfer = 0;
+    let totalItemsSold = 0;
 
     todayTxs.forEach(t => {
       const tot = t.total || 0;
@@ -831,13 +832,21 @@
       if (t.method === 'Tunai') totalCash += tot;
       else if (t.method === 'QRIS') totalQris += tot;
       else totalTransfer += tot;
+
+      (t.items || []).forEach(it => {
+        totalItemsSold += (it.qty || 1);
+      });
     });
+
+    const fullFormattedDate = window.POSStorage.formatFullDateWithTime ? window.POSStorage.formatFullDateWithTime(new Date()) : `${todayStr} (${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })})`;
 
     window._expectedOmsetToday = totalOmset;
     window._expectedCashToday = totalCash;
     window._expectedQrisToday = totalQris;
     window._expectedTransferToday = totalTransfer;
     window._expectedTxCountToday = todayTxs.length;
+    window._expectedItemsSoldToday = totalItemsSold;
+    window._fullFormattedDateToday = fullFormattedDate;
 
     const elDate = document.getElementById('csDateText');
     const elOmset = document.getElementById('csTotalOmsetVal');
@@ -847,7 +856,7 @@
     const elCount = document.getElementById('csTxCountVal');
     const elInput = document.getElementById('csCashActualInput');
 
-    if (elDate) elDate.textContent = todayStr + ' (' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ')';
+    if (elDate) elDate.textContent = fullFormattedDate;
     if (elOmset) elOmset.textContent = formatRp(totalOmset);
     if (elCash) elCash.textContent = formatRp(totalCash);
     if (elQris) elQris.textContent = formatRp(totalQris);
@@ -891,13 +900,16 @@
     const expectedCash = window._expectedCashToday || 0;
     const actualCash = parseInt(document.getElementById('csCashActualInput')?.value) || 0;
     const diff = actualCash - expectedCash;
+    const notesText = document.getElementById('csNotesInput')?.value || 'Setoran harian kasir';
 
     const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    const nowTimeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const nowTimeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace(':', '.');
+    const fullFormattedDate = window._fullFormattedDateToday || (window.POSStorage.formatFullDateWithTime ? window.POSStorage.formatFullDateWithTime(new Date()) : `${todayStr} (${nowTimeStr})`);
     
     // Create Closing Report Record for Owner/Admin
     const closingRecord = {
       id: 'CLS-' + Date.now(),
+      fullDateTime: fullFormattedDate,
       date: todayStr,
       time: nowTimeStr,
       cashier: state.role || 'Kasir',
@@ -908,6 +920,8 @@
       qrisTotal: window._expectedQrisToday || 0,
       transferTotal: window._expectedTransferToday || 0,
       txCount: window._expectedTxCountToday || 0,
+      totalItemsSold: window._expectedItemsSoldToday || 0,
+      notes: notesText,
       status: diff === 0 ? 'Sesuai' : (diff > 0 ? 'Lebih' : 'Selisih / Kurang')
     };
 
@@ -919,11 +933,11 @@
     state.draftOrders = [];
     saveState(state);
 
-    showToast(`Closing Shift Tanggal ${todayStr} Berhasil Diselesaikan & Diteruskan ke Admin!`, 'success');
+    showToast(`Closing Shift (${fullFormattedDate}) Berhasil Diselesaikan & Diteruskan ke Admin!`, 'success');
     closeClosingShiftModal();
 
     setTimeout(() => {
-      alert(`🎉 CLOSING SHIFT SUKSES!\n\nLaporan telah otomatis tersimpan ke Dashboard Admin/Owner.\n\nTanggal: ${todayStr} (${nowTimeStr})\nSetoran Uang Fisik Kasir: ${formatRp(actualCash)}\nTotal Omset Tunai Sistem: ${formatRp(expectedCash)}\nStatus Selisih: ${diff === 0 ? 'Sesuai (Rp 0)' : formatRp(diff)}\n\nSeluruh antrean draft pesanan telah dibersihkan untuk hari esok.`);
+      alert(`🎉 CLOSING SHIFT SUKSES!\n\nLaporan telah otomatis tersimpan ke Dashboard Admin/Owner.\n\nWaktu Closing: ${fullFormattedDate}\nSetoran Uang Fisik Kasir: ${formatRp(actualCash)}\nTotal Omset Tunai Sistem: ${formatRp(expectedCash)}\nStatus Selisih: ${diff === 0 ? 'Sesuai (Rp 0)' : formatRp(diff)}\n\nSeluruh antrean draft pesanan telah dibersihkan untuk hari esok.`);
     }, 300);
   }
 
