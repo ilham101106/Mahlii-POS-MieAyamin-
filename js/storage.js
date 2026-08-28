@@ -5,7 +5,7 @@
 (function (window) {
   "use strict";
 
-  const STORAGE_KEY = "mieayamin_pos_state_v4";
+  const STORAGE_KEY = "mieayamin_pos_state_v5";
 
   const DEFAULT_MENU = [
   {
@@ -130,11 +130,11 @@
   },
   {
     "id": "my-4",
-    "name": "Mie Yamin Pangsit Goreng",
+    "name": "Mie Yamin Pangsit (B/G) + Keju",
     "cat": "mie_yamin",
-    "price": 19000,
+    "price": 24000,
     "image": "images/mie_yamin_manis.png",
-    "desc": "Mie yamin manis pangsit goreng renyah."
+    "desc": "Mie yamin pangsit (B/G) + keju gurih."
   },
   {
     "id": "my-5",
@@ -146,22 +146,6 @@
   },
   {
     "id": "my-6",
-    "name": "Mie Yamin + Keju",
-    "cat": "mie_yamin",
-    "price": 21000,
-    "image": "images/mie_yamin_manis.png",
-    "desc": "Mie yamin manis dengan taburan keju gurih melimpah."
-  },
-  {
-    "id": "my-7",
-    "name": "Mie Yamin Pangsit (B/G) + Keju",
-    "cat": "mie_yamin",
-    "price": 24000,
-    "image": "images/mie_yamin_manis.png",
-    "desc": "Mie yamin pangsit topping keju gurih."
-  },
-  {
-    "id": "my-8",
     "name": "Mie Yamin Pangsit + Bakso",
     "cat": "mie_yamin",
     "price": 24000,
@@ -169,7 +153,7 @@
     "desc": "Mie yamin manis dengan pangsit & bakso sapi."
   },
   {
-    "id": "my-9",
+    "id": "my-7",
     "name": "Mie Yamin Pangsit + Ceker",
     "cat": "mie_yamin",
     "price": 24000,
@@ -177,7 +161,7 @@
     "desc": "Mie yamin manis dengan pangsit & ceker semur."
   },
   {
-    "id": "my-10",
+    "id": "my-8",
     "name": "Mie Yamin Ceker + Pangsit Goreng",
     "cat": "mie_yamin",
     "price": 24000,
@@ -185,7 +169,15 @@
     "desc": "Mie yamin manis ceker & pangsit goreng."
   },
   {
-    "id": "my-11",
+    "id": "my-9",
+    "name": "Mie Yamin Pangsit Goreng",
+    "cat": "mie_yamin",
+    "price": 19000,
+    "image": "images/mie_yamin_manis.png",
+    "desc": "Mie yamin manis pangsit goreng renyah."
+  },
+  {
+    "id": "my-10",
     "name": "Mie Yamin Bakso + Keju",
     "cat": "mie_yamin",
     "price": 24000,
@@ -193,7 +185,7 @@
     "desc": "Mie yamin bakso dengan taburan keju parut."
   },
   {
-    "id": "my-12",
+    "id": "my-11",
     "name": "Mie Yamin Ceker + Keju",
     "cat": "mie_yamin",
     "price": 24000,
@@ -201,15 +193,7 @@
     "desc": "Mie yamin ceker dengan taburan keju gurih."
   },
   {
-    "id": "my-13",
-    "name": "Mie Yamin Bakso Urat",
-    "cat": "mie_yamin",
-    "price": 23000,
-    "image": "images/mie_yamin_manis.png",
-    "desc": "Mie yamin dengan bakso urat berdaging."
-  },
-  {
-    "id": "my-14",
+    "id": "my-12",
     "name": "Mie Yamin Pangsit Bakso + Keju",
     "cat": "mie_yamin",
     "price": 29000,
@@ -217,12 +201,28 @@
     "desc": "Mie yamin pangsit, bakso & keju parut."
   },
   {
-    "id": "my-15",
+    "id": "my-13",
     "name": "Mie Yamin Pangsit Ceker + Keju",
     "cat": "mie_yamin",
     "price": 29000,
     "image": "images/ceker_pedas.png",
     "desc": "Mie yamin pangsit, ceker empuk & keju."
+  },
+  {
+    "id": "my-14",
+    "name": "Mie Yamin + Keju",
+    "cat": "mie_yamin",
+    "price": 21000,
+    "image": "images/mie_yamin_manis.png",
+    "desc": "Mie yamin manis dengan taburan keju gurih melimpah."
+  },
+  {
+    "id": "my-15",
+    "name": "Mie Yamin Bakso Urat",
+    "cat": "mie_yamin",
+    "price": 23000,
+    "image": "images/mie_yamin_manis.png",
+    "desc": "Mie yamin dengan bakso urat berdaging."
   },
   {
     "id": "my-16",
@@ -298,22 +298,6 @@
   },
   {
     "id": "mi-8",
-    "name": "Mie Ijo Pangsit Goreng",
-    "cat": "mie_ijo",
-    "price": 19000,
-    "image": "images/mie_yamin_manis.png",
-    "desc": "Mie ijo dengan pangsit goreng crispy."
-  },
-  {
-    "id": "mi-9",
-    "name": "Mie Ijo Pangsit Goreng + Keju",
-    "cat": "mie_ijo",
-    "price": 24000,
-    "image": "images/mie_yamin_manis.png",
-    "desc": "Mie ijo pangsit goreng + keju gurih."
-  },
-  {
-    "id": "mi-10",
     "name": "Mie Ijo Pangsit Basah + Bakso",
     "cat": "mie_ijo",
     "price": 22000,
@@ -321,12 +305,28 @@
     "desc": "Mie ijo pangsit basah & bakso sapi."
   },
   {
-    "id": "mi-11",
+    "id": "mi-9",
     "name": "Mie Ijo Pangsit Basah + Bakso + Keju",
     "cat": "mie_ijo",
     "price": 27000,
     "image": "images/mie_ayam_komplit.png",
     "desc": "Mie ijo pangsit basah, bakso & keju."
+  },
+  {
+    "id": "mi-10",
+    "name": "Mie Ijo Pangsit Goreng",
+    "cat": "mie_ijo",
+    "price": 19000,
+    "image": "images/mie_yamin_manis.png",
+    "desc": "Mie ijo dengan pangsit goreng crispy."
+  },
+  {
+    "id": "mi-11",
+    "name": "Mie Ijo Pangsit Goreng + Keju",
+    "cat": "mie_ijo",
+    "price": 24000,
+    "image": "images/mie_yamin_manis.png",
+    "desc": "Mie ijo pangsit goreng + keju gurih."
   },
   {
     "id": "mi-12",
@@ -490,27 +490,27 @@
   },
   {
     "id": "ms-11",
-    "name": "Spicy Pangsit (B/G) Level 1",
+    "name": "Spicy Pangsit B/G Lev. 1",
     "cat": "mie_spicy",
     "price": 18000,
     "image": "images/ceker_pedas.png",
-    "desc": "Spicy pangsit basah/goreng Level 1."
+    "desc": "Spicy pangsit B/G Level 1."
   },
   {
     "id": "ms-12",
-    "name": "Spicy Pangsit (B/G) Level 2",
+    "name": "Spicy Pangsit B/G Lev. 2",
     "cat": "mie_spicy",
     "price": 20000,
     "image": "images/ceker_pedas.png",
-    "desc": "Spicy pangsit basah/goreng Level 2."
+    "desc": "Spicy pangsit B/G Level 2."
   },
   {
     "id": "ms-13",
-    "name": "Spicy Pangsit (B/G) Level 3",
+    "name": "Spicy Pangsit B/G Lev. 3",
     "cat": "mie_spicy",
     "price": 22000,
     "image": "images/ceker_pedas.png",
-    "desc": "Spicy pangsit basah/goreng Level 3."
+    "desc": "Spicy pangsit B/G Level 3."
   },
   {
     "id": "ms-14",
@@ -634,6 +634,14 @@
   },
   {
     "id": "kw-3",
+    "name": "Kwetiaw Bakso Pangsit (Basah/Goreng)",
+    "cat": "kwetiaw",
+    "price": 22000,
+    "image": "images/mie_ayam_komplit.png",
+    "desc": "Kwetiaw bakso & pangsit basah/goreng."
+  },
+  {
+    "id": "kw-4",
     "name": "Kwetiaw Pangsit (Basah/Goreng)",
     "cat": "kwetiaw",
     "price": 19000,
@@ -641,7 +649,7 @@
     "desc": "Kwetiaw dengan pangsit basah/goreng."
   },
   {
-    "id": "kw-4",
+    "id": "kw-5",
     "name": "Kwetiaw Ceker",
     "cat": "kwetiaw",
     "price": 19000,
@@ -649,16 +657,8 @@
     "desc": "Kwetiaw dengan ceker semur empuk."
   },
   {
-    "id": "kw-5",
-    "name": "Kwetiaw Bakso Pangsit (B/G)",
-    "cat": "kwetiaw",
-    "price": 22000,
-    "image": "images/mie_ayam_komplit.png",
-    "desc": "Kwetiaw bakso & pangsit basah/goreng."
-  },
-  {
     "id": "kw-6",
-    "name": "Kwetiaw Ceker Pangsit (B/G)",
+    "name": "Kwetiaw Ceker Pangsit (Basah/Goreng)",
     "cat": "kwetiaw",
     "price": 22000,
     "image": "images/ceker_pedas.png",
@@ -706,14 +706,6 @@
   },
   {
     "id": "pt-4",
-    "name": "Porsi Ceker",
-    "cat": "porsi_tambahan",
-    "price": 15000,
-    "image": "images/ceker_pedas.png",
-    "desc": "1 Porsi ceker semur empuk meresap."
-  },
-  {
-    "id": "pt-5",
     "name": "Porsi Bakso Pangsit/Goreng",
     "cat": "porsi_tambahan",
     "price": 20000,
@@ -721,7 +713,7 @@
     "desc": "1 Porsi bakso & pangsit."
   },
   {
-    "id": "pt-6",
+    "id": "pt-5",
     "name": "Porsi Bakso Ceker",
     "cat": "porsi_tambahan",
     "price": 19000,
@@ -729,12 +721,20 @@
     "desc": "1 Porsi bakso & ceker semur."
   },
   {
-    "id": "pt-7",
+    "id": "pt-6",
     "name": "Porsi Pangsit Ceker",
     "cat": "porsi_tambahan",
     "price": 19000,
     "image": "images/ceker_pedas.png",
     "desc": "1 Porsi pangsit & ceker semur."
+  },
+  {
+    "id": "pt-7",
+    "name": "Porsi Ceker",
+    "cat": "porsi_tambahan",
+    "price": 15000,
+    "image": "images/ceker_pedas.png",
+    "desc": "1 Porsi ceker semur empuk meresap."
   },
   {
     "id": "pt-8",
@@ -746,7 +746,7 @@
   },
   {
     "id": "pt-9",
-    "name": "Extra Topping (Pangsit/Bakso/Ceker)",
+    "name": "Aneka Topping Satuan (Pangsit/Bakso/Ceker)",
     "cat": "porsi_tambahan",
     "price": 3000,
     "image": "images/ceker_pedas.png",
@@ -754,11 +754,11 @@
   },
   {
     "id": "min-1",
-    "name": "Es Teh Manis",
+    "name": "Teh Manis (Panas/Es)",
     "cat": "minuman",
     "price": 5000,
     "image": "images/es_teh_jumbo.png",
-    "desc": "Es teh manis segar."
+    "desc": "Teh manis hangat atau es segar."
   },
   {
     "id": "min-2",
@@ -770,54 +770,38 @@
   },
   {
     "id": "min-3",
-    "name": "Teh Manis Hangat",
-    "cat": "minuman",
-    "price": 4000,
-    "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80",
-    "desc": "Teh manis hangat."
-  },
-  {
-    "id": "min-4",
-    "name": "Teh Tawar Hangat",
+    "name": "Teh Tawar",
     "cat": "minuman",
     "price": 2000,
     "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80",
     "desc": "Teh tawar hangat pereda dahaga."
   },
   {
+    "id": "min-4",
+    "name": "Jeruk (Hangat/Es)",
+    "cat": "minuman",
+    "price": 9000,
+    "image": "images/es_jeruk_peras.png",
+    "desc": "Jeruk peras hangat atau es segar."
+  },
+  {
     "id": "min-5",
-    "name": "Es Jeruk Peras",
-    "cat": "minuman",
-    "price": 7000,
-    "image": "images/es_jeruk_peras.png",
-    "desc": "Es jeruk peras asli."
-  },
-  {
-    "id": "min-6",
-    "name": "Jeruk Hangat",
-    "cat": "minuman",
-    "price": 6000,
-    "image": "images/es_jeruk_peras.png",
-    "desc": "Jeruk peras hangat manis."
-  },
-  {
-    "id": "min-7",
-    "name": "Teh Botol Sosro",
+    "name": "Teh Botol",
     "cat": "minuman",
     "price": 5000,
     "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=500&q=80",
     "desc": "Teh Botol Sosro dingin."
   },
   {
-    "id": "min-8",
-    "name": "Air Mineral (600ml)",
+    "id": "min-6",
+    "name": "Air Mineral",
     "cat": "minuman",
-    "price": 4000,
+    "price": 5000,
     "image": "https://images.unsplash.com/photo-1560023907-5f339617ea30?auto=format&fit=crop&w=500&q=80",
     "desc": "Air mineral botol dingin."
   },
   {
-    "id": "min-9",
+    "id": "min-7",
     "name": "Es Susu",
     "cat": "minuman",
     "price": 8000,
@@ -825,23 +809,23 @@
     "desc": "Es susu kental manis segar."
   },
   {
-    "id": "min-10",
+    "id": "min-8",
     "name": "Soda Susu",
     "cat": "minuman",
-    "price": 12000,
+    "price": 16000,
     "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=500&q=80",
     "desc": "Soda susu gembira segar bertabur es."
   },
   {
-    "id": "min-11",
+    "id": "min-9",
     "name": "Es Campur",
     "cat": "minuman",
-    "price": 15000,
+    "price": 14000,
     "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=500&q=80",
     "desc": "Es campur buah manis komplit."
   },
   {
-    "id": "min-12",
+    "id": "min-10",
     "name": "Es Campur Durian",
     "cat": "minuman",
     "price": 20000,
@@ -849,18 +833,18 @@
     "desc": "Es campur topping buah durian asli manis."
   },
   {
-    "id": "min-13",
+    "id": "min-11",
     "name": "Sop Buah Komplit",
     "cat": "minuman",
-    "price": 18000,
+    "price": 14000,
     "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=500&q=80",
     "desc": "Sop buah komplit manis segar."
   },
   {
     "id": "jus-1",
-    "name": "Jus Alpukat",
+    "name": "Jus Alpokat",
     "cat": "jus",
-    "price": 12000,
+    "price": 13000,
     "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=500&q=80",
     "desc": "Jus alpukat kental manis."
   },
@@ -876,7 +860,7 @@
     "id": "jus-3",
     "name": "Jus Apel",
     "cat": "jus",
-    "price": 10000,
+    "price": 12000,
     "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=500&q=80",
     "desc": "Jus apel segar bervitamin."
   },
@@ -884,15 +868,15 @@
     "id": "jus-4",
     "name": "Jus Lemon",
     "cat": "jus",
-    "price": 10000,
+    "price": 13000,
     "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=500&q=80",
     "desc": "Jus lemon peras segar."
   },
   {
     "id": "jus-5",
-    "name": "Jus Jambu Biji",
+    "name": "Jus Jambu",
     "cat": "jus",
-    "price": 10000,
+    "price": 9000,
     "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=500&q=80",
     "desc": "Jus jambu biji merah kental."
   },
@@ -908,7 +892,7 @@
     "id": "jus-7",
     "name": "Jus Buah Naga",
     "cat": "jus",
-    "price": 11000,
+    "price": 10000,
     "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=500&q=80",
     "desc": "Jus buah naga merah manis."
   },
@@ -924,7 +908,7 @@
     "id": "jus-9",
     "name": "Jus Jeruk",
     "cat": "jus",
-    "price": 9000,
+    "price": 10000,
     "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=500&q=80",
     "desc": "Jus jeruk segar bervitamin C."
   },
@@ -1031,7 +1015,7 @@
       const parsed = JSON.parse(saved);
 
       // Auto-purge legacy menu items (e.g. old Mie Ayam Jamur, legacy mie-1, etc.)
-      const hasLegacyMenu = Array.isArray(parsed.customMenu) && parsed.customMenu.some(m => m.id.startsWith('mie-') || m.id === 'top-1' || m.id === 'samp-1' || (m.name && m.name.toLowerCase().includes('jamur')));
+      const hasLegacyMenu = Array.isArray(parsed.customMenu) && (parsed.customMenu.length !== 114 || parsed.customMenu.some(m => m.id.startsWith('mie-') || m.price === 7000 || m.price === 18000 && m.name === 'Sop Buah Komplit'));
       if (hasLegacyMenu || !Array.isArray(parsed.customMenu) || parsed.customMenu.length < 50) {
         parsed.customMenu = JSON.parse(JSON.stringify(DEFAULT_MENU));
       }
