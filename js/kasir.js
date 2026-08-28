@@ -662,6 +662,26 @@
     const btnFinishTxDetail = document.getElementById('btnFinishTxDetail');
     if (btnCloseTxDetail) btnCloseTxDetail.addEventListener('click', closeTxDetailModal);
     if (btnFinishTxDetail) btnFinishTxDetail.addEventListener('click', closeTxDetailModal);
+
+    // Closing Shift Triggers
+    const btnClosingShift = document.getElementById('btnClosingShift');
+    const btnCloseClosingShift = document.getElementById('btnCloseClosingShift');
+    const btnCancelClosingShift = document.getElementById('btnCancelClosingShift');
+    const csCashActualInput = document.getElementById('csCashActualInput');
+    const btnConfirmClosingShift = document.getElementById('btnConfirmClosingShift');
+    const btnPrintClosingReport = document.getElementById('btnPrintClosingReport');
+
+    if (btnClosingShift) btnClosingShift.addEventListener('click', openClosingShiftModal);
+    if (btnCloseClosingShift) btnCloseClosingShift.addEventListener('click', closeClosingShiftModal);
+    if (btnCancelClosingShift) btnCancelClosingShift.addEventListener('click', closeClosingShiftModal);
+    if (csCashActualInput) {
+      csCashActualInput.addEventListener('input', () => {
+        const expectedCash = window._expectedCashToday || 0;
+        calculateClosingDiff(expectedCash);
+      });
+    }
+    if (btnConfirmClosingShift) btnConfirmClosingShift.addEventListener('click', processClosingShift);
+    if (btnPrintClosingReport) btnPrintClosingReport.addEventListener('click', () => window.print());
   }
 
   // --- KASIR HISTORY MODAL FUNCTIONS ---
@@ -789,6 +809,98 @@
       modal.classList.remove('active');
       modal.style.setProperty('display', 'none', 'important');
     }
+  }
+
+  // --- CLOSING SHIFT & Z-REPORT FUNCTIONS ---
+  function openClosingShiftModal() {
+    const modal = document.getElementById('closingShiftModal');
+    if (!modal) return;
+
+    const txs = state.transactions || [];
+    const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    const todayTxs = txs.filter(t => t.date === todayStr);
+
+    let totalOmset = 0;
+    let totalCash = 0;
+    let totalQris = 0;
+    let totalTransfer = 0;
+
+    todayTxs.forEach(t => {
+      const tot = t.total || 0;
+      totalOmset += tot;
+      if (t.method === 'Tunai') totalCash += tot;
+      else if (t.method === 'QRIS') totalQris += tot;
+      else totalTransfer += tot;
+    });
+
+    window._expectedCashToday = totalCash;
+
+    const elDate = document.getElementById('csDateText');
+    const elOmset = document.getElementById('csTotalOmsetVal');
+    const elCash = document.getElementById('csTotalCashVal');
+    const elQris = document.getElementById('csTotalQrisVal');
+    const elTransfer = document.getElementById('csTotalTransferVal');
+    const elCount = document.getElementById('csTxCountVal');
+    const elInput = document.getElementById('csCashActualInput');
+
+    if (elDate) elDate.textContent = todayStr + ' (' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ')';
+    if (elOmset) elOmset.textContent = formatRp(totalOmset);
+    if (elCash) elCash.textContent = formatRp(totalCash);
+    if (elQris) elQris.textContent = formatRp(totalQris);
+    if (elTransfer) elTransfer.textContent = formatRp(totalTransfer);
+    if (elCount) elCount.textContent = todayTxs.length + ' Transaksi Selesai';
+    if (elInput) elInput.value = totalCash;
+
+    calculateClosingDiff(totalCash);
+
+    modal.classList.add('active');
+    modal.style.setProperty('display', 'flex', 'important');
+  }
+
+  function closeClosingShiftModal() {
+    const modal = document.getElementById('closingShiftModal');
+    if (modal) {
+      modal.classList.remove('active');
+      modal.style.setProperty('display', 'none', 'important');
+    }
+  }
+
+  function calculateClosingDiff(expectedCash) {
+    const inputVal = parseInt(document.getElementById('csCashActualInput')?.value) || 0;
+    const diff = inputVal - expectedCash;
+    const diffEl = document.getElementById('csCashDiffText');
+    if (!diffEl) return;
+
+    if (diff === 0) {
+      diffEl.textContent = 'Rp 0 (Sesuai / Pas)';
+      diffEl.style.color = '#047857';
+    } else if (diff > 0) {
+      diffEl.textContent = `+${formatRp(diff)} (Uang Lebih)`;
+      diffEl.style.color = '#3b82f6';
+    } else {
+      diffEl.textContent = `${formatRp(diff)} (Uang Kurang/Selisih)`;
+      diffEl.style.color = '#dc2626';
+    }
+  }
+
+  function processClosingShift() {
+    const expectedCash = window._expectedCashToday || 0;
+    const actualCash = parseInt(document.getElementById('csCashActualInput')?.value) || 0;
+    const diff = actualCash - expectedCash;
+
+    const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    
+    // Auto-clean active drafts for closing shift
+    state.cart = [];
+    state.draftOrders = [];
+    saveState(state);
+
+    showToast(`Closing Shift Tanggal ${todayStr} Berhasil Diselesaikan!`, 'success');
+    closeClosingShiftModal();
+
+    setTimeout(() => {
+      alert(`🎉 CLOSING SHIFT SUKSES!\n\nTanggal: ${todayStr}\nKasir: Shift Active\nSetoran Uang Fisik Kasir: ${formatRp(actualCash)}\nTotal Omset Tunai Sistem: ${formatRp(expectedCash)}\nStatus Selisih: ${diff === 0 ? 'Sesuai (Rp 0)' : formatRp(diff)}\n\nSeluruh antrean draft pesanan telah dibersihkan untuk hari esok.`);
+    }, 300);
   }
 
 })();

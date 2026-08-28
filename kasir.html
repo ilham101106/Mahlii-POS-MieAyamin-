@@ -34,6 +34,9 @@
     </div>
 
     <div class="header-actions">
+      <button class="btn btn-secondary btn-sm" id="btnClosingShift" title="Lakukan Closing Shift Harian & Setoran Kasir" style="background:#fef3c7; color:#b45309; border-color:#f59e0b; font-weight:800;">
+        <span>🌙 Closing Shift</span>
+      </button>
       <button class="btn btn-secondary btn-sm" id="btnKasirHistory" title="Lihat Riwayat & Cetak Ulang Struk Transaksi">
         <span>Riwayat Transaksi</span>
       </button>
@@ -404,6 +407,58 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" id="btnFinishTxDetail">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CLOSING SHIFT KASIR (Z-REPORT) -->
+  <div class="modal-overlay" id="closingShiftModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🌙 Laporan Closing Shift Kasir</h3>
+        <button class="btn-close" id="btnCloseClosingShift">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:var(--bg-card-subtle); padding:12px 16px; border-radius:12px; margin-bottom:14px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="color:var(--text-main); display:block; font-size:0.95rem;">Ringkasan Setoran Hari Ini</strong>
+            <small id="csDateText" style="color:var(--text-muted); font-weight:600;"></small>
+          </div>
+          <span id="csTxCountVal" style="background:var(--primary-light); color:var(--primary); font-weight:800; font-size:0.8rem; padding:4px 10px; border-radius:12px;">0 Transaksi</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:12px; border-radius:12px; text-align:center;">
+            <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem; display:block;">TOTAL OMSET HARI INI</small>
+            <strong id="csTotalOmsetVal" style="color:var(--primary); font-size:1.25rem;">Rp 0</strong>
+          </div>
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:12px; border-radius:12px; text-align:center;">
+            <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem; display:block;">TOTAL TUNAI (SISTEM)</small>
+            <strong id="csTotalCashVal" style="color:#047857; font-size:1.25rem;">Rp 0</strong>
+          </div>
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:12px; border-radius:12px; text-align:center;">
+            <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem; display:block;">TOTAL QRIS</small>
+            <strong id="csTotalQrisVal" style="color:#3b82f6; font-size:1.1rem;">Rp 0</strong>
+          </div>
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:12px; border-radius:12px; text-align:center;">
+            <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem; display:block;">TOTAL TRANSFER</small>
+            <strong id="csTotalTransferVal" style="color:#8b5cf6; font-size:1.1rem;">Rp 0</strong>
+          </div>
+        </div>
+
+        <div style="background:#fef3c7; border:1px solid #f59e0b; padding:14px; border-radius:12px;">
+          <label style="font-weight:800; font-size:0.85rem; color:#b45309; display:block; margin-bottom:6px;">INPUT UANG FISIK KASIR (LACI):</label>
+          <input type="number" id="csCashActualInput" placeholder="0" style="font-size:1.2rem; font-weight:800; width:100%; padding:10px; border-radius:10px; border:2px solid #d97706; text-align:right; margin-bottom:8px; background:#fff;">
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:8px 12px; border-radius:8px; border:1px solid var(--border-color);">
+            <span style="font-size:0.82rem; font-weight:700; color:var(--text-muted);">Status Selisih Kasir:</span>
+            <strong id="csCashDiffText" style="font-size:1rem; font-weight:800; color:#047857;">Rp 0 (Sesuai)</strong>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; gap:10px;">
+        <button class="btn btn-secondary" id="btnCancelClosingShift">Batal</button>
+        <button class="btn btn-primary" id="btnConfirmClosingShift" style="flex:1;">🌙 Selesaikan Closing Shift</button>
       </div>
     </div>
   </div>

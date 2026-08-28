@@ -300,12 +300,23 @@
         });
       }
 
+      const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+      if (parsed.lastActiveDate && parsed.lastActiveDate !== todayStr) {
+        // Auto-rollover day change: clear active drafts & old kitchen queue
+        parsed.draftOrders = [];
+        if (Array.isArray(parsed.kitchenOrders)) {
+          parsed.kitchenOrders = parsed.kitchenOrders.filter(o => o.status === 'Selesai');
+        }
+      }
+
       // Re-save sanitized state to v3 key
       const newState = {
         role: parsed.role || 'Kasir',
+        lastActiveDate: todayStr,
         customMenu: parsed.customMenu || JSON.parse(JSON.stringify(DEFAULT_MENU)),
         stock: parsed.stock || JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS)),
         cart: parsed.cart || [],
+        draftOrders: parsed.draftOrders || [],
         orderType: parsed.orderType || 'dinein',
         tableNo: parsed.tableNo || 'Meja 01',
         customerName: parsed.customerName || '',
