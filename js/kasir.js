@@ -833,7 +833,11 @@
       else totalTransfer += tot;
     });
 
+    window._expectedOmsetToday = totalOmset;
     window._expectedCashToday = totalCash;
+    window._expectedQrisToday = totalQris;
+    window._expectedTransferToday = totalTransfer;
+    window._expectedTxCountToday = todayTxs.length;
 
     const elDate = document.getElementById('csDateText');
     const elOmset = document.getElementById('csTotalOmsetVal');
@@ -889,17 +893,37 @@
     const diff = actualCash - expectedCash;
 
     const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    const nowTimeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
     
+    // Create Closing Report Record for Owner/Admin
+    const closingRecord = {
+      id: 'CLS-' + Date.now(),
+      date: todayStr,
+      time: nowTimeStr,
+      cashier: state.role || 'Kasir',
+      totalOmset: window._expectedOmsetToday || 0,
+      expectedCash: expectedCash,
+      actualCash: actualCash,
+      diff: diff,
+      qrisTotal: window._expectedQrisToday || 0,
+      transferTotal: window._expectedTransferToday || 0,
+      txCount: window._expectedTxCountToday || 0,
+      status: diff === 0 ? 'Sesuai' : (diff > 0 ? 'Lebih' : 'Selisih / Kurang')
+    };
+
+    if (!Array.isArray(state.closingReports)) state.closingReports = [];
+    state.closingReports.unshift(closingRecord);
+
     // Auto-clean active drafts for closing shift
     state.cart = [];
     state.draftOrders = [];
     saveState(state);
 
-    showToast(`Closing Shift Tanggal ${todayStr} Berhasil Diselesaikan!`, 'success');
+    showToast(`Closing Shift Tanggal ${todayStr} Berhasil Diselesaikan & Diteruskan ke Admin!`, 'success');
     closeClosingShiftModal();
 
     setTimeout(() => {
-      alert(`🎉 CLOSING SHIFT SUKSES!\n\nTanggal: ${todayStr}\nKasir: Shift Active\nSetoran Uang Fisik Kasir: ${formatRp(actualCash)}\nTotal Omset Tunai Sistem: ${formatRp(expectedCash)}\nStatus Selisih: ${diff === 0 ? 'Sesuai (Rp 0)' : formatRp(diff)}\n\nSeluruh antrean draft pesanan telah dibersihkan untuk hari esok.`);
+      alert(`🎉 CLOSING SHIFT SUKSES!\n\nLaporan telah otomatis tersimpan ke Dashboard Admin/Owner.\n\nTanggal: ${todayStr} (${nowTimeStr})\nSetoran Uang Fisik Kasir: ${formatRp(actualCash)}\nTotal Omset Tunai Sistem: ${formatRp(expectedCash)}\nStatus Selisih: ${diff === 0 ? 'Sesuai (Rp 0)' : formatRp(diff)}\n\nSeluruh antrean draft pesanan telah dibersihkan untuk hari esok.`);
     }, 300);
   }
 

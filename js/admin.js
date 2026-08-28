@@ -75,6 +75,7 @@
     renderHourlyChart(txs);
     renderBestSellers(txs);
     renderAdminTxTable(txs);
+    renderAdminClosingReportsTable();
   }
 
   function renderHourlyChart(txs) {
@@ -187,6 +188,35 @@
         });
       });
     }
+  }
+
+  function renderAdminClosingReportsTable() {
+    const tableBody = document.getElementById('adminClosingTableBody');
+    if (!tableBody) return;
+
+    const reports = state.closingReports || [];
+    if (reports.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-muted" style="padding:20px;">Belum ada laporan closing shift kasir yang tercatat</td></tr>`;
+      return;
+    }
+
+    tableBody.innerHTML = reports.map(r => {
+      let statusBadge = '<span class="badge badge-success">Sesuai / Pas</span>';
+      if (r.diff > 0) statusBadge = `<span class="badge badge-info">+${formatRp(r.diff)} (Lebih)</span>`;
+      else if (r.diff < 0) statusBadge = `<span class="badge badge-danger">${formatRp(r.diff)} (Selisih)</span>`;
+
+      return `
+        <tr>
+          <td><strong>${r.date}</strong> <small class="text-muted">${r.time}</small></td>
+          <td><span class="badge badge-secondary">${r.cashier || 'Kasir'}</span></td>
+          <td><strong style="color:var(--primary);">${formatRp(r.totalOmset)}</strong></td>
+          <td>${formatRp(r.expectedCash)}</td>
+          <td><strong>${formatRp(r.actualCash)}</strong></td>
+          <td><span style="font-weight:700; color:${r.diff === 0 ? '#047857' : (r.diff > 0 ? '#3b82f6' : '#dc2626')}">${formatRp(r.diff)}</span></td>
+          <td>${statusBadge}</td>
+        </tr>
+      `;
+    }).join('');
   }
 
   // --- KELOLA MENU PRODUK (FULL CRUD: CREATE, READ, UPDATE, DELETE) ---

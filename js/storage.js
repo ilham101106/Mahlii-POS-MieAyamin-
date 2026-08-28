@@ -324,6 +324,7 @@
         taxRate: parsed.taxRate || 0,
         kdsOrders: parsed.kdsOrders || generateInitialKdsOrders(),
         transactions: parsed.transactions || generateInitialTransactions(),
+        closingReports: parsed.closingReports || [],
         feedbacks: parsed.feedbacks || generateInitialFeedbacks()
       };
       
