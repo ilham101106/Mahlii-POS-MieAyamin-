@@ -34,8 +34,13 @@
     </div>
 
     <div class="header-actions">
-      <button class="btn btn-secondary btn-sm" id="btnClosingShift" title="Lakukan Closing Shift Harian & Setoran Kasir" style="background:#fef3c7; color:#b45309; border-color:#f59e0b; font-weight:800;">
-        <span>🌙 Closing Shift</span>
+      <button class="btn btn-secondary btn-sm" id="btnClosingShift" title="Lakukan Closing Shift Harian & Setoran Kasir" style="background:#fef3c7; color:#b45309; border-color:#f59e0b; font-weight:800; display:inline-flex; align-items:center; gap:6px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3L5 9M12 3L19 9" />
+          <rect x="2" y="9" width="20" height="12" rx="3" />
+          <text x="12" y="17" font-size="5.5" font-weight="900" font-family="sans-serif" text-anchor="middle" fill="currentColor" stroke="none" letter-spacing="0.5">CLOSED</text>
+        </svg>
+        <span>Closing Shift</span>
       </button>
       <button class="btn btn-secondary btn-sm" id="btnKasirHistory" title="Lihat Riwayat & Cetak Ulang Struk Transaksi">
         <span>Riwayat Transaksi</span>
@@ -415,7 +420,7 @@
   <div class="modal-overlay" id="closingShiftModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>🌙 Laporan Closing Shift Kasir</h3>
+        <h3>🔒 Laporan Closing Shift Kasir</h3>
         <button class="btn-close" id="btnCloseClosingShift">&times;</button>
       </div>
       <div class="modal-body">
@@ -458,7 +463,7 @@
       </div>
       <div class="modal-footer" style="display:flex; gap:10px;">
         <button class="btn btn-secondary" id="btnCancelClosingShift">Batal</button>
-        <button class="btn btn-primary" id="btnConfirmClosingShift" style="flex:1;">🌙 Selesaikan Closing Shift</button>
+        <button class="btn btn-primary" id="btnConfirmClosingShift" style="flex:1;">🔒 Selesaikan Closing Shift</button>
       </div>
     </div>
   </div>
