@@ -340,11 +340,17 @@ body {
   stroke: #ffffff;
 }
 
-/* MENU GRID & LIST VIEW */
+/* MENU GRID & LIST VIEW (MAX 4 CARDS PER ROW) */
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .menu-grid.list-view {
