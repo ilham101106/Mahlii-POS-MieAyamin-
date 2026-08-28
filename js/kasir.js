@@ -656,6 +656,12 @@
     if (btnCloseReceipt) btnCloseReceipt.addEventListener('click', closeReceiptModal);
     if (btnFinishReceipt) btnFinishReceipt.addEventListener('click', closeReceiptModal);
     if (btnPrintReceipt) btnPrintReceipt.addEventListener('click', () => window.print());
+
+    // Tx Detail Modal Buttons
+    const btnCloseTxDetail = document.getElementById('btnCloseTxDetail');
+    const btnFinishTxDetail = document.getElementById('btnFinishTxDetail');
+    if (btnCloseTxDetail) btnCloseTxDetail.addEventListener('click', closeTxDetailModal);
+    if (btnFinishTxDetail) btnFinishTxDetail.addEventListener('click', closeTxDetailModal);
   }
 
   // --- KASIR HISTORY MODAL FUNCTIONS ---
@@ -699,14 +705,38 @@
     }
 
     list.innerHTML = filtered.map(tx => `
-      <div style="background:var(--bg-card-subtle); border:1px solid var(--border-color); padding:12px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; gap:12px;">
-        <div>
-          <strong style="color:var(--text-main); font-size:0.95rem; display:block;">${tx.id} — ${tx.customer} (${tx.table})</strong>
-          <small style="color:var(--text-muted);">${tx.date} ${tx.time} • ${tx.method} • <span style="color:var(--primary); font-weight:700;">${formatRp(tx.total)}</span></small>
+      <div style="background:var(--bg-card-subtle); border:1px solid var(--border-color); padding:14px 16px; border-radius:12px; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong style="color:var(--text-main); font-size:0.95rem; display:block;">${tx.id} — ${tx.customer} (${tx.table})</strong>
+            <small style="color:var(--text-muted);">${tx.date} ${tx.time} • ${tx.method} • <span style="color:var(--primary); font-weight:800;">${formatRp(tx.total)}</span></small>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm btn-view-detail-tx" data-id="${tx.id}">🔍 Detail</button>
+            <button class="btn btn-secondary btn-sm btn-reprint-tx" data-id="${tx.id}">🖨️ Struk</button>
+          </div>
         </div>
-        <button class="btn btn-secondary btn-sm btn-reprint-tx" data-id="${tx.id}">Cetak Struk</button>
+
+        <!-- Inline Item List Preview -->
+        <div style="background:#ffffff; border:1px solid var(--border-color); border-radius:8px; padding:10px 12px; font-size:0.85rem;">
+          <div style="font-weight:700; color:var(--text-muted); font-size:0.75rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">Item Pesanan (${tx.items ? tx.items.length : 0}):</div>
+          ${(tx.items || []).map(it => `
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <span><strong>${it.qty}x</strong> ${it.name} ${it.notesText ? `<small class="text-muted">(${it.notesText})</small>` : ''}</span>
+              <span style="font-weight:700; color:var(--text-main);">${formatRp((it.unitPrice || it.price || 0) * it.qty)}</span>
+            </div>
+          `).join('')}
+        </div>
       </div>
     `).join('');
+
+    list.querySelectorAll('.btn-view-detail-tx').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const txId = btn.dataset.id;
+        const tx = txs.find(t => t.id === txId);
+        if (tx) openTxDetailModal(tx);
+      });
+    });
 
     list.querySelectorAll('.btn-reprint-tx').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -718,6 +748,60 @@
         }
       });
     });
+  }
+
+  // --- DETAIL TRANSAKSI MODAL ---
+  function openTxDetailModal(tx) {
+    const modal = document.getElementById('txDetailModal');
+    if (!modal) return;
+
+    const elId = document.getElementById('tdTxId');
+    const elDateTime = document.getElementById('tdDateTime');
+    const elCustomer = document.getElementById('tdCustomer');
+    const elType = document.getElementById('tdType');
+
+    if (elId) elId.textContent = tx.id;
+    if (elDateTime) elDateTime.textContent = tx.date + ' ' + tx.time;
+    if (elCustomer) elCustomer.textContent = `${tx.customer} (${tx.table})`;
+    if (elType) elType.textContent = tx.type || 'Dine-in';
+
+    const list = document.getElementById('tdItemsList');
+    if (list) {
+      list.innerHTML = (tx.items || []).map(item => `
+        <div class="checkout-detail-item" style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.9rem;">
+          <div>
+            <strong>${item.name}</strong> x ${item.qty}
+            ${item.notesText ? `<br><small style="color:var(--text-muted);">Catatan: ${item.notesText}</small>` : ''}
+          </div>
+          <div style="font-weight:700;">${formatRp((item.unitPrice || item.price || 0) * item.qty)}</div>
+        </div>
+      `).join('');
+    }
+
+    const elSubtotal = document.getElementById('tdSubtotal');
+    const elTax = document.getElementById('tdTax');
+    const elTotal = document.getElementById('tdTotal');
+    const elMethod = document.getElementById('tdPayMethod');
+    const elGiven = document.getElementById('tdPayGiven');
+    const elChange = document.getElementById('tdChange');
+
+    if (elSubtotal) elSubtotal.textContent = formatRp(tx.subtotal || tx.total);
+    if (elTax) elTax.textContent = formatRp(tx.tax || 0);
+    if (elTotal) elTotal.textContent = formatRp(tx.total);
+    if (elMethod) elMethod.textContent = tx.method;
+    if (elGiven) elGiven.textContent = formatRp(tx.given || tx.total);
+    if (elChange) elChange.textContent = formatRp(tx.change || 0);
+
+    modal.classList.add('active');
+    modal.style.setProperty('display', 'flex', 'important');
+  }
+
+  function closeTxDetailModal() {
+    const modal = document.getElementById('txDetailModal');
+    if (modal) {
+      modal.classList.remove('active');
+      modal.style.setProperty('display', 'none', 'important');
+    }
   }
 
 })();

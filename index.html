@@ -373,6 +373,41 @@
     </div>
   </div>
 
+  <!-- MODAL: DETAIL TRANSAKSI -->
+  <div class="modal-overlay" id="txDetailModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Detail Rincian Transaksi</h3>
+        <button class="btn-close" id="btnCloseTxDetail">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
+          <div>
+            <h4 id="tdTxId" style="font-size:1.1rem; font-weight:800; color:var(--text-main); margin:0;">TRX-000</h4>
+            <small id="tdDateTime" style="color:var(--text-muted);"></small>
+          </div>
+          <div style="text-align:right;">
+            <span id="tdType" class="badge" style="background:var(--primary-light); color:var(--primary); padding:4px 10px; border-radius:12px; font-weight:700; font-size:0.8rem;">Dine-in</span>
+            <strong id="tdCustomer" style="display:block; margin-top:4px; font-size:0.9rem;"></strong>
+          </div>
+        </div>
+        <div id="tdItemsList" class="checkout-summary-box" style="background:var(--bg-card-subtle); padding:12px 16px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color);"></div>
+        <div class="checkout-summary-box" style="background:var(--bg-card-subtle); padding:12px 16px; border-radius:12px; border:1px solid var(--border-color);">
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.9rem;"><span>Subtotal:</span><strong id="tdSubtotal">Rp 0</strong></div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.9rem;"><span>Pajak (0%):</span><strong id="tdTax">Rp 0</strong></div>
+          <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.15rem; color:var(--primary); margin-top:6px; padding-top:6px; border-top:1px solid var(--border-color);"><span>Total Tagihan:</span><strong id="tdTotal">Rp 0</strong></div>
+          <hr style="margin:8px 0; border:none; border-top:1px dashed var(--border-color);">
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem;"><span>Metode Pembayaran:</span><strong id="tdPayMethod">Tunai</strong></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem;"><span>Uang Diterima:</span><strong id="tdPayGiven">Rp 0</strong></div>
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem;"><span>Uang Kembalian:</span><strong id="tdChange" style="color:var(--success, #10b981);">Rp 0</strong></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnFinishTxDetail">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="js/storage.js"></script>
