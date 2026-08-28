@@ -55,31 +55,40 @@
 
   // --- ANALYTICS & DASHBOARD ---
   function renderAnalytics() {
+    state = loadState();
     const txs = state.transactions || [];
 
-    const totalOmset = txs.reduce((sum, t) => sum + (t.total || 0), 0);
-    const totalTxCount = txs.length;
-    const estProfit = Math.round(totalOmset * 0.45);
-    const qrisTotal = txs.filter(t => t.method === 'QRIS').reduce((sum, t) => sum + (t.total || 0), 0);
+    // Filter transactions for today
+    const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    const todayTxs = txs.filter(t => t.date === todayStr || !t.date);
 
-    const omsetEl = document.getElementById('totalOmsetVal');
-    const countEl = document.getElementById('totalTxCountVal');
-    const profitEl = document.getElementById('estProfitVal');
-    const qrisEl = document.getElementById('qrisIncomeVal');
+    // Fallback to active transactions or full transaction state
+    const activeTxs = todayTxs.length > 0 ? todayTxs : txs;
+
+    const totalOmset = activeTxs.reduce((sum, t) => sum + (t.total || 0), 0);
+    const totalTxCount = activeTxs.length;
+    const estProfit = Math.round(totalOmset * 0.45);
+    const qrisTotal = activeTxs.filter(t => t.method === 'QRIS').reduce((sum, t) => sum + (t.total || 0), 0);
+
+    // Match exact IDs from admin.html (metricTotalRevenue, metricTotalTx, metricNetProfit, metricQrisRevenue)
+    const omsetEl = document.getElementById('metricTotalRevenue') || document.getElementById('totalOmsetVal');
+    const countEl = document.getElementById('metricTotalTx') || document.getElementById('totalTxCountVal');
+    const profitEl = document.getElementById('metricNetProfit') || document.getElementById('estProfitVal');
+    const qrisEl = document.getElementById('metricQrisRevenue') || document.getElementById('qrisIncomeVal');
 
     if (omsetEl) omsetEl.textContent = formatRp(totalOmset);
     if (countEl) countEl.textContent = totalTxCount + ' Transaksi';
     if (profitEl) profitEl.textContent = formatRp(estProfit);
     if (qrisEl) qrisEl.textContent = formatRp(qrisTotal);
 
-    renderHourlyChart(txs);
-    renderBestSellers(txs);
+    renderHourlyChart(activeTxs);
+    renderBestSellers(activeTxs);
     renderAdminTxTable(txs);
     renderAdminClosingReportsTable();
   }
 
   function renderHourlyChart(txs) {
-    const chartContainer = document.getElementById('hourlySalesChart');
+    const chartContainer = document.getElementById('hourlyChartContainer') || document.getElementById('hourlySalesChart');
     if (!chartContainer) return;
 
     const hoursMap = {};

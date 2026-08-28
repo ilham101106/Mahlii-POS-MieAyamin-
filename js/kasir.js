@@ -4,28 +4,35 @@
    ========================================================================== */
 
 (function () {
-  'use strict';
+  "use strict";
 
-  const { loadState, saveState, formatRp, showToast, startLiveClock, playChimeSound } = window.POSStorage;
+  const {
+    loadState,
+    saveState,
+    formatRp,
+    showToast,
+    startLiveClock,
+    playChimeSound,
+  } = window.POSStorage;
 
   let state = loadState();
-  let currentCategory = 'all';
-  let currentViewMode = 'grid';
-  let searchQuery = '';
-  let activePayMethod = 'Tunai';
+  let currentCategory = "all";
+  let currentViewMode = "grid";
+  let searchQuery = "";
+  let activePayMethod = "Tunai";
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     initKasir();
   });
 
   function initKasir() {
-    startLiveClock('liveClock');
+    startLiveClock("liveClock");
     renderMenuGrid();
     renderCart();
     renderDraftBadge();
     bindEvents();
 
-    window.addEventListener('storage', (e) => {
+    window.addEventListener("storage", (e) => {
       if (e.key === window.POSStorage.STORAGE_KEY) {
         state = loadState();
         renderMenuGrid();
@@ -37,17 +44,21 @@
 
   // --- CATALOG GRID & LIST RENDER ---
   function renderMenuGrid() {
-    const grid = document.getElementById('menuGrid');
+    const grid = document.getElementById("menuGrid");
     if (!grid) return;
 
-    grid.className = currentViewMode === 'list' ? 'menu-grid list-view' : 'menu-grid';
+    grid.className =
+      currentViewMode === "list" ? "menu-grid list-view" : "menu-grid";
 
     const items = state.customMenu || window.POSStorage.DEFAULT_MENU;
 
-    const filtered = items.filter(item => {
-      const matchCat = currentCategory === 'all' || item.cat === currentCategory;
-      const matchQuery = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         (item.desc && item.desc.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filtered = items.filter((item) => {
+      const matchCat =
+        currentCategory === "all" || item.cat === currentCategory;
+      const matchQuery =
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.desc &&
+          item.desc.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchCat && matchQuery;
     });
 
@@ -61,7 +72,9 @@
       return;
     }
 
-    grid.innerHTML = filtered.map(item => `
+    grid.innerHTML = filtered
+      .map(
+        (item) => `
       <div class="menu-card" data-id="${item.id}">
         <div class="menu-img-wrapper">
           <img src="${item.customImage || item.image}" alt="${item.name}" loading="lazy">
@@ -69,7 +82,7 @@
         <div class="menu-card-body">
           <div>
             <div class="menu-title">${item.name}</div>
-            <div class="menu-desc">${item.desc || ''}</div>
+            <div class="menu-desc">${item.desc || ""}</div>
           </div>
           <div class="menu-card-footer">
             <span class="menu-price">${formatRp(item.price)}</span>
@@ -77,12 +90,14 @@
           </div>
         </div>
       </div>
-    `).join('');
+    `,
+      )
+      .join("");
 
-    grid.querySelectorAll('.menu-card').forEach(card => {
-      card.addEventListener('click', () => {
+    grid.querySelectorAll(".menu-card").forEach((card) => {
+      card.addEventListener("click", () => {
         const id = card.dataset.id;
-        const item = items.find(m => m.id === id);
+        const item = items.find((m) => m.id === id);
         if (item) addToCart(item);
       });
     });
@@ -90,7 +105,7 @@
 
   // --- CART OPERATIONS & RENDER ---
   function addToCart(item) {
-    const existingIndex = state.cart.findIndex(i => i.id === item.id);
+    const existingIndex = state.cart.findIndex((i) => i.id === item.id);
     if (existingIndex > -1) {
       state.cart[existingIndex].qty += 1;
     } else {
@@ -100,13 +115,13 @@
         unitPrice: item.price,
         qty: 1,
         image: item.customImage || item.image,
-        notesText: ''
+        notesText: "",
       });
     }
 
     saveState(state);
     renderCart();
-    showToast(`+1 ${item.name} ditambahkan`, 'success');
+    showToast(`+1 ${item.name} ditambahkan`, "success");
   }
 
   function updateCartQty(index, delta) {
@@ -122,11 +137,11 @@
   }
 
   function renderCart() {
-    const list = document.getElementById('cartItemsList');
-    const subtotalEl = document.getElementById('cartSubtotal');
-    const taxEl = document.getElementById('cartTax');
-    const totalEl = document.getElementById('cartTotal');
-    const checkoutBtn = document.getElementById('btnCheckout');
+    const list = document.getElementById("cartItemsList");
+    const subtotalEl = document.getElementById("cartSubtotal");
+    const taxEl = document.getElementById("cartTax");
+    const totalEl = document.getElementById("cartTotal");
+    const checkoutBtn = document.getElementById("btnCheckout");
 
     if (!list) return;
 
@@ -137,14 +152,16 @@
           <small>Pilih menu makanan atau minuman di sebelah kiri untuk menambah pesanan.</small>
         </div>
       `;
-      if (subtotalEl) subtotalEl.textContent = 'Rp 0';
-      if (taxEl) taxEl.textContent = 'Rp 0';
-      if (totalEl) totalEl.textContent = 'Rp 0';
+      if (subtotalEl) subtotalEl.textContent = "Rp 0";
+      if (taxEl) taxEl.textContent = "Rp 0";
+      if (totalEl) totalEl.textContent = "Rp 0";
       if (checkoutBtn) checkoutBtn.disabled = true;
       return;
     }
 
-    list.innerHTML = state.cart.map((item, index) => `
+    list.innerHTML = state.cart
+      .map(
+        (item, index) => `
       <div class="cart-item-row">
         <div class="cart-item-info">
           <strong>${item.name}</strong>
@@ -157,25 +174,30 @@
           <strong style="margin-left: 8px; font-size: 0.95rem;">${formatRp(item.unitPrice * item.qty)}</strong>
         </div>
       </div>
-    `).join('');
+    `,
+      )
+      .join("");
 
-    let subtotal = state.cart.reduce((sum, item) => sum + (item.unitPrice * item.qty), 0);
+    let subtotal = state.cart.reduce(
+      (sum, item) => sum + item.unitPrice * item.qty,
+      0,
+    );
     let grandTotal = subtotal;
 
     if (subtotalEl) subtotalEl.textContent = formatRp(subtotal);
-    if (taxEl) taxEl.textContent = 'Rp 0';
+    if (taxEl) taxEl.textContent = "Rp 0";
     if (totalEl) totalEl.textContent = formatRp(grandTotal);
     if (checkoutBtn) checkoutBtn.disabled = false;
 
-    list.querySelectorAll('.btn-sub-qty').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    list.querySelectorAll(".btn-sub-qty").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         updateCartQty(parseInt(btn.dataset.index), -1);
       });
     });
 
-    list.querySelectorAll('.btn-add-qty').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    list.querySelectorAll(".btn-add-qty").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         updateCartQty(parseInt(btn.dataset.index), 1);
       });
@@ -184,28 +206,35 @@
 
   function resetCart() {
     if (state.cart.length === 0) return;
-    if (confirm('Kosongkan keranjang belanja?')) {
+    if (confirm("Kosongkan keranjang belanja?")) {
       state.cart = [];
       saveState(state);
       renderCart();
-      showToast('Keranjang berhasil dikosongkan', 'success');
+      showToast("Keranjang berhasil dikosongkan", "success");
     }
   }
 
   // --- HOLD ORDERS & DRAFTS ---
   function holdCurrentOrder() {
     if (state.cart.length === 0) {
-      showToast('Keranjang kosong, tidak ada pesanan untuk di-hold!', 'danger');
+      showToast("Keranjang kosong, tidak ada pesanan untuk di-hold!", "danger");
       return;
     }
 
     const draft = {
-      id: 'DRAFT-' + Date.now().toString().slice(-4),
-      time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-      table: document.getElementById('tableSelect')?.value || 'Meja 01',
-      customer: document.getElementById('customerNameInput')?.value.trim() || 'Pelanggan',
-      type: document.querySelector('.btn-order-type.active')?.dataset.type || 'dinein',
-      cart: JSON.parse(JSON.stringify(state.cart))
+      id: "DRAFT-" + Date.now().toString().slice(-4),
+      time: new Date().toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      table: document.getElementById("tableSelect")?.value || "Meja 01",
+      customer:
+        document.getElementById("customerNameInput")?.value.trim() ||
+        "Pelanggan",
+      type:
+        document.querySelector(".btn-order-type.active")?.dataset.type ||
+        "dinein",
+      cart: JSON.parse(JSON.stringify(state.cart)),
     };
 
     if (!state.draftOrders) state.draftOrders = [];
@@ -215,26 +244,30 @@
 
     renderCart();
     renderDraftBadge();
-    showToast(`Pesanan ${draft.id} berhasil di-hold!`, 'success');
+    showToast(`Pesanan ${draft.id} berhasil di-hold!`, "success");
   }
 
   function renderDraftBadge() {
-    const badge = document.getElementById('draftCountBadge');
+    const badge = document.getElementById("draftCountBadge");
     if (badge) badge.textContent = (state.draftOrders || []).length;
   }
 
   function openHoldOrdersModal() {
-    const modal = document.getElementById('holdOrdersModal');
-    const list = document.getElementById('holdOrdersList');
+    const modal = document.getElementById("holdOrdersModal");
+    const list = document.getElementById("holdOrdersList");
     if (!modal || !list) return;
 
     const drafts = state.draftOrders || [];
     if (drafts.length === 0) {
       list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Belum ada pesanan yang disimpan.</div>`;
     } else {
-      list.innerHTML = drafts.map((d, index) => {
-        const total = d.cart.reduce((sum, item) => sum + (item.unitPrice * item.qty), 0);
-        return `
+      list.innerHTML = drafts
+        .map((d, index) => {
+          const total = d.cart.reduce(
+            (sum, item) => sum + item.unitPrice * item.qty,
+            0,
+          );
+          return `
           <div style="background:var(--bg-card-subtle); border:1px solid var(--border-color); padding:12px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
             <div>
               <strong>${d.id} (${d.customer} - ${d.table})</strong><br>
@@ -243,10 +276,11 @@
             <button class="btn btn-primary btn-sm btn-restore-draft" data-index="${index}">Buka Draft ➔</button>
           </div>
         `;
-      }).join('');
+        })
+        .join("");
 
-      list.querySelectorAll('.btn-restore-draft').forEach(btn => {
-        btn.addEventListener('click', () => {
+      list.querySelectorAll(".btn-restore-draft").forEach((btn) => {
+        btn.addEventListener("click", () => {
           const idx = parseInt(btn.dataset.index);
           const restored = state.draftOrders.splice(idx, 1)[0];
           if (restored) {
@@ -255,93 +289,122 @@
             renderCart();
             renderDraftBadge();
             closeHoldOrdersModal();
-            showToast(`Draft ${restored.id} berhasil dimuat kembali!`, 'success');
+            showToast(
+              `Draft ${restored.id} berhasil dimuat kembali!`,
+              "success",
+            );
           }
         });
       });
     }
 
-    modal.classList.add('active');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add("active");
+    modal.style.setProperty("display", "flex", "important");
   }
 
   function closeHoldOrdersModal() {
-    const modal = document.getElementById('holdOrdersModal');
+    const modal = document.getElementById("holdOrdersModal");
     if (modal) {
-      modal.classList.remove('active');
-      modal.style.setProperty('display', 'none', 'important');
+      modal.classList.remove("active");
+      modal.style.setProperty("display", "none", "important");
     }
   }
 
   // --- CHECKOUT & PAYMENT MODAL ---
   function openCheckoutModal() {
     if (state.cart.length === 0) {
-      showToast('Keranjang masih kosong!', 'danger');
+      showToast("Keranjang masih kosong!", "danger");
       return;
     }
 
-    const modal = document.getElementById('checkoutModal');
+    const modal = document.getElementById("checkoutModal");
     if (!modal) return;
 
-    let subtotal = state.cart.reduce((sum, item) => sum + (item.unitPrice * item.qty), 0);
+    let subtotal = state.cart.reduce(
+      (sum, item) => sum + item.unitPrice * item.qty,
+      0,
+    );
     let grandTotal = subtotal;
 
-    document.getElementById('checkoutSubtotal').textContent = formatRp(subtotal);
-    document.getElementById('checkoutTax').textContent = 'Rp 0';
-    document.getElementById('checkoutGrandTotal').textContent = formatRp(grandTotal);
+    document.getElementById("checkoutSubtotal").textContent =
+      formatRp(subtotal);
+    document.getElementById("checkoutTax").textContent = "Rp 0";
+    document.getElementById("checkoutGrandTotal").textContent =
+      formatRp(grandTotal);
 
-    const cashInput = document.getElementById('payGivenInput');
+    const cashInput = document.getElementById("payGivenInput");
     if (cashInput) {
       cashInput.value = grandTotal;
       calculateChange(grandTotal);
     }
 
-    modal.classList.add('active');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add("active");
+    modal.style.setProperty("display", "flex", "important");
   }
 
   function closeCheckoutModal() {
-    const modal = document.getElementById('checkoutModal');
+    const modal = document.getElementById("checkoutModal");
     if (modal) {
-      modal.classList.remove('active');
-      modal.style.setProperty('display', 'none', 'important');
+      modal.classList.remove("active");
+      modal.style.setProperty("display", "none", "important");
     }
   }
 
   function calculateChange(grandTotal) {
     if (grandTotal === undefined || grandTotal === null) {
-      grandTotal = parseInt(document.getElementById('checkoutGrandTotal')?.textContent.replace(/[^0-9]/g, '')) || 0;
+      grandTotal =
+        parseInt(
+          document
+            .getElementById("checkoutGrandTotal")
+            ?.textContent.replace(/[^0-9]/g, ""),
+        ) || 0;
     }
-    const given = parseInt(document.getElementById('payGivenInput')?.value) || 0;
+    const given =
+      parseInt(document.getElementById("payGivenInput")?.value) || 0;
     const change = given - grandTotal;
-    const changeEl = document.getElementById('payChangeText');
+    const changeEl = document.getElementById("payChangeText");
     if (changeEl) {
       changeEl.textContent = formatRp(Math.max(0, change));
-      changeEl.style.color = change >= 0 ? '#047857' : '#dc2626';
+      changeEl.style.color = change >= 0 ? "#047857" : "#dc2626";
     }
   }
 
   function processPayment() {
     if (state.cart.length === 0) return;
 
-    let subtotal = state.cart.reduce((sum, item) => sum + (item.unitPrice * item.qty), 0);
+    let subtotal = state.cart.reduce(
+      (sum, item) => sum + item.unitPrice * item.qty,
+      0,
+    );
     let grandTotal = subtotal;
 
-    const given = parseInt(document.getElementById('payGivenInput')?.value) || grandTotal;
+    const given =
+      parseInt(document.getElementById("payGivenInput")?.value) || grandTotal;
 
-    if (activePayMethod === 'Tunai' && given < grandTotal) {
-      showToast('Uang diterima kurang dari total tagihan!', 'danger');
+    if (activePayMethod === "Tunai" && given < grandTotal) {
+      showToast("Uang diterima kurang dari total tagihan!", "danger");
       return;
     }
 
-    const txId = 'TRX-' + Date.now().toString().slice(-6);
+    const txId = "TRX-" + Date.now().toString().slice(-6);
     const now = new Date();
-    const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = now.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    const timeStr = now.toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
-    const tbl = document.getElementById('tableSelect')?.value || 'Meja 01';
-    const cust = document.getElementById('customerNameInput')?.value.trim() || 'Pelanggan Umum';
-    const typeLabel = document.querySelector('.btn-order-type.active')?.textContent.trim() || 'Dine-in';
+    const tbl = document.getElementById("tableSelect")?.value || "Meja 01";
+    const cust =
+      document.getElementById("customerNameInput")?.value.trim() ||
+      "Pelanggan Umum";
+    const typeLabel =
+      document.querySelector(".btn-order-type.active")?.textContent.trim() ||
+      "Dine-in";
 
     const newTx = {
       id: txId,
@@ -357,7 +420,7 @@
       given,
       change: Math.max(0, given - grandTotal),
       items: JSON.parse(JSON.stringify(state.cart)),
-      status: 'Selesai'
+      status: "Selesai",
     };
 
     if (!state.transactions) state.transactions = [];
@@ -370,9 +433,9 @@
       table: tbl,
       type: typeLabel,
       customer: cust,
-      status: 'Menunggu',
+      status: "Menunggu",
       createdAt: Date.now(),
-      items: JSON.parse(JSON.stringify(state.cart))
+      items: JSON.parse(JSON.stringify(state.cart)),
     };
 
     if (!state.kitchenOrders) state.kitchenOrders = [];
@@ -386,142 +449,161 @@
     renderCart();
     closeCheckoutModal();
     openReceiptModal(newTx);
-    showToast(`Transaksi ${txId} Berhasil!`, 'success');
+    showToast(`Transaksi ${txId} Berhasil!`, "success");
   }
 
   // --- RECEIPT MODAL ---
   function openReceiptModal(tx) {
-    const modal = document.getElementById('receiptModal');
+    const modal = document.getElementById("receiptModal");
     if (!modal) return;
 
-    document.getElementById('receiptTxId').textContent = tx.id;
-    document.getElementById('receiptDateTime').textContent = `${tx.date} ${tx.time}`;
-    document.getElementById('receiptCustomer').textContent = `${tx.customer} (${tx.table})`;
-    document.getElementById('receiptType').textContent = tx.type;
+    document.getElementById("receiptTxId").textContent = tx.id;
+    document.getElementById("receiptDateTime").textContent =
+      `${tx.date} ${tx.time}`;
+    document.getElementById("receiptCustomer").textContent =
+      `${tx.customer} (${tx.table})`;
+    document.getElementById("receiptType").textContent = tx.type;
 
-    const list = document.getElementById('receiptItemsList');
+    const list = document.getElementById("receiptItemsList");
     if (list) {
-      list.innerHTML = tx.items.map(item => `
+      list.innerHTML = tx.items
+        .map(
+          (item) => `
         <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
           <div>
             <strong>${item.name}</strong> x ${item.qty}
           </div>
           <div>${formatRp(item.unitPrice * item.qty)}</div>
         </div>
-      `).join('');
+      `,
+        )
+        .join("");
     }
 
-    document.getElementById('receiptSubtotal').textContent = formatRp(tx.subtotal);
-    document.getElementById('receiptTax').textContent = 'Rp 0';
-    document.getElementById('receiptTotal').textContent = formatRp(tx.total);
-    document.getElementById('receiptPayMethod').textContent = tx.method;
-    document.getElementById('receiptPayGiven').textContent = formatRp(tx.given);
-    document.getElementById('receiptChange').textContent = formatRp(tx.change);
+    document.getElementById("receiptSubtotal").textContent = formatRp(
+      tx.subtotal,
+    );
+    document.getElementById("receiptTax").textContent = "Rp 0";
+    document.getElementById("receiptTotal").textContent = formatRp(tx.total);
+    document.getElementById("receiptPayMethod").textContent = tx.method;
+    document.getElementById("receiptPayGiven").textContent = formatRp(tx.given);
+    document.getElementById("receiptChange").textContent = formatRp(tx.change);
 
-    modal.classList.add('active');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add("active");
+    modal.style.setProperty("display", "flex", "important");
   }
 
   function closeReceiptModal() {
-    const modal = document.getElementById('receiptModal');
+    const modal = document.getElementById("receiptModal");
     if (modal) {
-      modal.classList.remove('active');
-      modal.style.setProperty('display', 'none', 'important');
+      modal.classList.remove("active");
+      modal.style.setProperty("display", "none", "important");
     }
   }
 
   // --- EVENT BINDINGS ---
   function bindEvents() {
     // Search Bar Input
-    const searchInput = document.getElementById('searchInput');
+    const searchInput = document.getElementById("searchInput");
     if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
+      searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value;
         renderMenuGrid();
       });
     }
 
     // View Mode Switcher (Grid vs List)
-    const btnViewGrid = document.getElementById('btnViewGrid');
-    const btnViewList = document.getElementById('btnViewList');
+    const btnViewGrid = document.getElementById("btnViewGrid");
+    const btnViewList = document.getElementById("btnViewList");
 
     if (btnViewGrid) {
-      btnViewGrid.addEventListener('click', () => {
-        btnViewGrid.classList.add('active');
-        if (btnViewList) btnViewList.classList.remove('active');
-        currentViewMode = 'grid';
+      btnViewGrid.addEventListener("click", () => {
+        btnViewGrid.classList.add("active");
+        if (btnViewList) btnViewList.classList.remove("active");
+        currentViewMode = "grid";
         renderMenuGrid();
       });
     }
 
     if (btnViewList) {
-      btnViewList.addEventListener('click', () => {
-        btnViewList.classList.add('active');
-        if (btnViewGrid) btnViewGrid.classList.remove('active');
-        currentViewMode = 'list';
+      btnViewList.addEventListener("click", () => {
+        btnViewList.classList.add("active");
+        if (btnViewGrid) btnViewGrid.classList.remove("active");
+        currentViewMode = "list";
         renderMenuGrid();
       });
     }
 
     // Category Tabs Filter
-    document.querySelectorAll('.cat-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+    document.querySelectorAll(".cat-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document
+          .querySelectorAll(".cat-tab")
+          .forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
         currentCategory = tab.dataset.cat;
         renderMenuGrid();
       });
     });
 
     // Order Type Selector
-    document.querySelectorAll('.btn-order-type').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.btn-order-type').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    document.querySelectorAll(".btn-order-type").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document
+          .querySelectorAll(".btn-order-type")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
       });
     });
 
     // Reset Cart
-    const btnResetCart = document.getElementById('btnResetCart');
-    if (btnResetCart) btnResetCart.addEventListener('click', resetCart);
+    const btnResetCart = document.getElementById("btnResetCart");
+    if (btnResetCart) btnResetCart.addEventListener("click", resetCart);
 
     // Hold Order & Drafts
-    const btnHoldOrder = document.getElementById('btnHoldOrder');
-    if (btnHoldOrder) btnHoldOrder.addEventListener('click', holdCurrentOrder);
+    const btnHoldOrder = document.getElementById("btnHoldOrder");
+    if (btnHoldOrder) btnHoldOrder.addEventListener("click", holdCurrentOrder);
 
-    const btnViewDrafts = document.getElementById('btnViewDrafts');
-    if (btnViewDrafts) btnViewDrafts.addEventListener('click', openHoldOrdersModal);
+    const btnViewDrafts = document.getElementById("btnViewDrafts");
+    if (btnViewDrafts)
+      btnViewDrafts.addEventListener("click", openHoldOrdersModal);
 
-    const btnCloseHoldOrders = document.getElementById('btnCloseHoldOrders');
-    const btnCancelHoldOrders = document.getElementById('btnCancelHoldOrders');
-    if (btnCloseHoldOrders) btnCloseHoldOrders.addEventListener('click', closeHoldOrdersModal);
-    if (btnCancelHoldOrders) btnCancelHoldOrders.addEventListener('click', closeHoldOrdersModal);
+    const btnCloseHoldOrders = document.getElementById("btnCloseHoldOrders");
+    const btnCancelHoldOrders = document.getElementById("btnCancelHoldOrders");
+    if (btnCloseHoldOrders)
+      btnCloseHoldOrders.addEventListener("click", closeHoldOrdersModal);
+    if (btnCancelHoldOrders)
+      btnCancelHoldOrders.addEventListener("click", closeHoldOrdersModal);
 
     // Checkout Modal Triggers
-    const btnCheckout = document.getElementById('btnCheckout');
-    if (btnCheckout) btnCheckout.addEventListener('click', openCheckoutModal);
+    const btnCheckout = document.getElementById("btnCheckout");
+    if (btnCheckout) btnCheckout.addEventListener("click", openCheckoutModal);
 
-    const btnCloseCheckout = document.getElementById('btnCloseCheckout');
-    const btnCancelCheckout = document.getElementById('btnCancelCheckout');
-    if (btnCloseCheckout) btnCloseCheckout.addEventListener('click', closeCheckoutModal);
-    if (btnCancelCheckout) btnCancelCheckout.addEventListener('click', closeCheckoutModal);
+    const btnCloseCheckout = document.getElementById("btnCloseCheckout");
+    const btnCancelCheckout = document.getElementById("btnCancelCheckout");
+    if (btnCloseCheckout)
+      btnCloseCheckout.addEventListener("click", closeCheckoutModal);
+    if (btnCancelCheckout)
+      btnCancelCheckout.addEventListener("click", closeCheckoutModal);
 
-    const btnConfirmPay = document.getElementById('btnConfirmPay');
-    if (btnConfirmPay) btnConfirmPay.addEventListener('click', processPayment);
+    const btnConfirmPay = document.getElementById("btnConfirmPay");
+    if (btnConfirmPay) btnConfirmPay.addEventListener("click", processPayment);
 
     // Payment Method Selector
-    document.querySelectorAll('.btn-pay-method').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.btn-pay-method').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    document.querySelectorAll(".btn-pay-method").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document
+          .querySelectorAll(".btn-pay-method")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
         activePayMethod = btn.dataset.method;
       });
     });
 
     // Direct Cash Input Listener
-    const payGivenInput = document.getElementById('payGivenInput');
+    const payGivenInput = document.getElementById("payGivenInput");
     if (payGivenInput) {
-      ['input', 'keyup', 'change'].forEach(evt => {
+      ["input", "keyup", "change"].forEach((evt) => {
         payGivenInput.addEventListener(evt, () => {
           calculateChange();
         });
@@ -529,13 +611,18 @@
     }
 
     // Quick Cash Buttons
-    document.querySelectorAll('.btn-quick-cash').forEach(btn => {
-      btn.addEventListener('click', () => {
+    document.querySelectorAll(".btn-quick-cash").forEach((btn) => {
+      btn.addEventListener("click", () => {
         const cashVal = btn.dataset.cash;
-        const cashInput = document.getElementById('payGivenInput');
-        let grandTotal = parseInt(document.getElementById('checkoutGrandTotal')?.textContent.replace(/[^0-9]/g, '')) || 0;
+        const cashInput = document.getElementById("payGivenInput");
+        let grandTotal =
+          parseInt(
+            document
+              .getElementById("checkoutGrandTotal")
+              ?.textContent.replace(/[^0-9]/g, ""),
+          ) || 0;
 
-        if (cashVal === 'pas') {
+        if (cashVal === "pas") {
           cashInput.value = grandTotal;
         } else {
           cashInput.value = parseInt(cashVal);
@@ -545,15 +632,20 @@
     });
 
     // Numpad Buttons
-    document.querySelectorAll('.cashier-numpad').forEach(btn => {
-      btn.addEventListener('click', () => {
+    document.querySelectorAll(".cashier-numpad").forEach((btn) => {
+      btn.addEventListener("click", () => {
         const num = btn.dataset.num;
-        const cashInput = document.getElementById('payGivenInput');
-        let currentVal = cashInput.value || '';
-        let grandTotal = parseInt(document.getElementById('checkoutGrandTotal')?.textContent.replace(/[^0-9]/g, '')) || 0;
+        const cashInput = document.getElementById("payGivenInput");
+        let currentVal = cashInput.value || "";
+        let grandTotal =
+          parseInt(
+            document
+              .getElementById("checkoutGrandTotal")
+              ?.textContent.replace(/[^0-9]/g, ""),
+          ) || 0;
 
-        if (num === 'C') {
-          currentVal = '';
+        if (num === "C") {
+          currentVal = "";
         } else {
           currentVal += num;
         }
@@ -563,155 +655,183 @@
     });
 
     // Switch Role Modal Trigger
-    const triggerRole = document.getElementById('btnSwitchRoleModalTrigger');
-    const switchRoleModal = document.getElementById('switchRoleModal');
-    const btnCloseSwitchRole = document.getElementById('btnCloseSwitchRole');
-    const btnSelectOwner = document.getElementById('btnSelectOwnerRole');
-    const portalPinModal = document.getElementById('portalPinModal');
-    const btnClosePortalPin = document.getElementById('btnClosePortalPin');
-    const pinDisp = document.getElementById('portalPinDisplay');
+    const triggerRole = document.getElementById("btnSwitchRoleModalTrigger");
+    const switchRoleModal = document.getElementById("switchRoleModal");
+    const btnCloseSwitchRole = document.getElementById("btnCloseSwitchRole");
+    const btnSelectOwner = document.getElementById("btnSelectOwnerRole");
+    const portalPinModal = document.getElementById("portalPinModal");
+    const btnClosePortalPin = document.getElementById("btnClosePortalPin");
+    const pinDisp = document.getElementById("portalPinDisplay");
 
-    let enteredPin = '';
+    let enteredPin = "";
 
     if (triggerRole && switchRoleModal) {
-      triggerRole.addEventListener('click', () => {
-        switchRoleModal.classList.add('active');
-        switchRoleModal.style.setProperty('display', 'flex', 'important');
+      triggerRole.addEventListener("click", () => {
+        switchRoleModal.classList.add("active");
+        switchRoleModal.style.setProperty("display", "flex", "important");
       });
     }
 
     if (btnCloseSwitchRole && switchRoleModal) {
-      btnCloseSwitchRole.addEventListener('click', () => {
-        switchRoleModal.classList.remove('active');
-        switchRoleModal.style.setProperty('display', 'none', 'important');
+      btnCloseSwitchRole.addEventListener("click", () => {
+        switchRoleModal.classList.remove("active");
+        switchRoleModal.style.setProperty("display", "none", "important");
       });
     }
 
     if (btnSelectOwner) {
-      btnSelectOwner.addEventListener('click', () => {
+      btnSelectOwner.addEventListener("click", () => {
         if (switchRoleModal) {
-          switchRoleModal.classList.remove('active');
-          switchRoleModal.style.setProperty('display', 'none', 'important');
+          switchRoleModal.classList.remove("active");
+          switchRoleModal.style.setProperty("display", "none", "important");
         }
-        enteredPin = '';
-        if (pinDisp) pinDisp.value = '';
+        enteredPin = "";
+        if (pinDisp) pinDisp.value = "";
         if (portalPinModal) {
-          portalPinModal.classList.add('active');
-          portalPinModal.style.setProperty('display', 'flex', 'important');
+          portalPinModal.classList.add("active");
+          portalPinModal.style.setProperty("display", "flex", "important");
         }
       });
     }
 
     if (btnClosePortalPin && portalPinModal) {
-      btnClosePortalPin.addEventListener('click', () => {
-        portalPinModal.classList.remove('active');
-        portalPinModal.style.setProperty('display', 'none', 'important');
+      btnClosePortalPin.addEventListener("click", () => {
+        portalPinModal.classList.remove("active");
+        portalPinModal.style.setProperty("display", "none", "important");
       });
     }
 
-    document.querySelectorAll('.owner-pin-key').forEach(btn => {
-      btn.addEventListener('click', () => {
+    document.querySelectorAll(".owner-pin-key").forEach((btn) => {
+      btn.addEventListener("click", () => {
         const key = btn.dataset.key;
-        if (key === 'C') {
-          enteredPin = '';
-        } else if (key === 'OK') {
-          if (enteredPin === '9999') {
-            sessionStorage.setItem('mieayamin_owner_authed', 'true');
-            window.location.href = 'admin.html';
+        if (key === "C") {
+          enteredPin = "";
+        } else if (key === "OK") {
+          if (enteredPin === "9999") {
+            sessionStorage.setItem("mieayamin_owner_authed", "true");
+            window.location.href = "admin.html";
           } else {
-            showToast('PIN Owner Salah! (Default: 9999)', 'danger');
-            enteredPin = '';
+            showToast("PIN Owner Salah! (Default: 9999)", "danger");
+            enteredPin = "";
           }
         } else {
           if (enteredPin.length < 6) enteredPin += key;
         }
-        if (pinDisp) pinDisp.value = '•'.repeat(enteredPin.length);
+        if (pinDisp) pinDisp.value = "•".repeat(enteredPin.length);
       });
     });
 
     // Kasir History Modal Triggers
-    const btnKasirHistory = document.getElementById('btnKasirHistory');
-    const btnCloseKasirHistory = document.getElementById('btnCloseKasirHistory');
-    const btnCloseKasirHistoryFooter = document.getElementById('btnCloseKasirHistoryFooter');
-    const searchKasirTxInput = document.getElementById('searchKasirTxInput');
+    const btnKasirHistory = document.getElementById("btnKasirHistory");
+    const btnCloseKasirHistory = document.getElementById(
+      "btnCloseKasirHistory",
+    );
+    const btnCloseKasirHistoryFooter = document.getElementById(
+      "btnCloseKasirHistoryFooter",
+    );
+    const searchKasirTxInput = document.getElementById("searchKasirTxInput");
 
     if (btnKasirHistory) {
-      btnKasirHistory.addEventListener('click', openKasirHistoryModal);
+      btnKasirHistory.addEventListener("click", openKasirHistoryModal);
     }
     if (btnCloseKasirHistory) {
-      btnCloseKasirHistory.addEventListener('click', closeKasirHistoryModal);
+      btnCloseKasirHistory.addEventListener("click", closeKasirHistoryModal);
     }
     if (btnCloseKasirHistoryFooter) {
-      btnCloseKasirHistoryFooter.addEventListener('click', closeKasirHistoryModal);
+      btnCloseKasirHistoryFooter.addEventListener(
+        "click",
+        closeKasirHistoryModal,
+      );
     }
     if (searchKasirTxInput) {
-      searchKasirTxInput.addEventListener('input', renderKasirHistoryList);
+      searchKasirTxInput.addEventListener("input", renderKasirHistoryList);
     }
 
     // Receipt Modal Buttons
-    const btnCloseReceipt = document.getElementById('btnCloseReceipt');
-    const btnFinishReceipt = document.getElementById('btnFinishReceipt');
-    const btnPrintReceipt = document.getElementById('btnPrintReceipt');
+    const btnCloseReceipt = document.getElementById("btnCloseReceipt");
+    const btnFinishReceipt = document.getElementById("btnFinishReceipt");
+    const btnPrintReceipt = document.getElementById("btnPrintReceipt");
 
-    if (btnCloseReceipt) btnCloseReceipt.addEventListener('click', closeReceiptModal);
-    if (btnFinishReceipt) btnFinishReceipt.addEventListener('click', closeReceiptModal);
-    if (btnPrintReceipt) btnPrintReceipt.addEventListener('click', () => window.print());
+    if (btnCloseReceipt)
+      btnCloseReceipt.addEventListener("click", closeReceiptModal);
+    if (btnFinishReceipt)
+      btnFinishReceipt.addEventListener("click", closeReceiptModal);
+    if (btnPrintReceipt)
+      btnPrintReceipt.addEventListener("click", () => window.print());
 
     // Tx Detail Modal Buttons
-    const btnCloseTxDetail = document.getElementById('btnCloseTxDetail');
-    const btnFinishTxDetail = document.getElementById('btnFinishTxDetail');
-    if (btnCloseTxDetail) btnCloseTxDetail.addEventListener('click', closeTxDetailModal);
-    if (btnFinishTxDetail) btnFinishTxDetail.addEventListener('click', closeTxDetailModal);
+    const btnCloseTxDetail = document.getElementById("btnCloseTxDetail");
+    const btnFinishTxDetail = document.getElementById("btnFinishTxDetail");
+    if (btnCloseTxDetail)
+      btnCloseTxDetail.addEventListener("click", closeTxDetailModal);
+    if (btnFinishTxDetail)
+      btnFinishTxDetail.addEventListener("click", closeTxDetailModal);
 
     // Closing Shift Triggers
-    const btnClosingShift = document.getElementById('btnClosingShift');
-    const btnCloseClosingShift = document.getElementById('btnCloseClosingShift');
-    const btnCancelClosingShift = document.getElementById('btnCancelClosingShift');
-    const csCashActualInput = document.getElementById('csCashActualInput');
-    const btnConfirmClosingShift = document.getElementById('btnConfirmClosingShift');
-    const btnPrintClosingReport = document.getElementById('btnPrintClosingReport');
+    const btnClosingShift = document.getElementById("btnClosingShift");
+    const btnCloseClosingShift = document.getElementById(
+      "btnCloseClosingShift",
+    );
+    const btnCancelClosingShift = document.getElementById(
+      "btnCancelClosingShift",
+    );
+    const csCashActualInput = document.getElementById("csCashActualInput");
+    const btnConfirmClosingShift = document.getElementById(
+      "btnConfirmClosingShift",
+    );
+    const btnPrintClosingReport = document.getElementById(
+      "btnPrintClosingReport",
+    );
 
-    if (btnClosingShift) btnClosingShift.addEventListener('click', openClosingShiftModal);
-    if (btnCloseClosingShift) btnCloseClosingShift.addEventListener('click', closeClosingShiftModal);
-    if (btnCancelClosingShift) btnCancelClosingShift.addEventListener('click', closeClosingShiftModal);
+    if (btnClosingShift)
+      btnClosingShift.addEventListener("click", openClosingShiftModal);
+    if (btnCloseClosingShift)
+      btnCloseClosingShift.addEventListener("click", closeClosingShiftModal);
+    if (btnCancelClosingShift)
+      btnCancelClosingShift.addEventListener("click", closeClosingShiftModal);
     if (csCashActualInput) {
-      csCashActualInput.addEventListener('input', () => {
+      csCashActualInput.addEventListener("input", () => {
         const expectedCash = window._expectedCashToday || 0;
         calculateClosingDiff(expectedCash);
       });
     }
-    if (btnConfirmClosingShift) btnConfirmClosingShift.addEventListener('click', processClosingShift);
-    if (btnPrintClosingReport) btnPrintClosingReport.addEventListener('click', () => window.print());
+    if (btnConfirmClosingShift)
+      btnConfirmClosingShift.addEventListener("click", processClosingShift);
+    if (btnPrintClosingReport)
+      btnPrintClosingReport.addEventListener("click", () => window.print());
   }
 
   // --- KASIR HISTORY MODAL FUNCTIONS ---
   function openKasirHistoryModal() {
-    const modal = document.getElementById('kasirHistoryModal');
+    const modal = document.getElementById("kasirHistoryModal");
     if (!modal) return;
     renderKasirHistoryList();
-    modal.classList.add('active');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add("active");
+    modal.style.setProperty("display", "flex", "important");
   }
 
   function closeKasirHistoryModal() {
-    const modal = document.getElementById('kasirHistoryModal');
+    const modal = document.getElementById("kasirHistoryModal");
     if (modal) {
-      modal.classList.remove('active');
-      modal.style.setProperty('display', 'none', 'important');
+      modal.classList.remove("active");
+      modal.style.setProperty("display", "none", "important");
     }
   }
 
   function renderKasirHistoryList() {
-    const list = document.getElementById('kasirHistoryList');
+    const list = document.getElementById("kasirHistoryList");
     if (!list) return;
 
-    const query = (document.getElementById('searchKasirTxInput')?.value || '').toLowerCase().trim();
+    const query = (document.getElementById("searchKasirTxInput")?.value || "")
+      .toLowerCase()
+      .trim();
     const txs = state.transactions || [];
 
-    const filtered = txs.filter(tx =>
-      tx.id.toLowerCase().includes(query) ||
-      (tx.customer && tx.customer.toLowerCase().includes(query)) ||
-      (tx.table && tx.table.toLowerCase().includes(query))
+    const filtered = txs.filter(
+      (tx) =>
+        tx.id.toLowerCase().includes(query) ||
+        (tx.customer && tx.customer.toLowerCase().includes(query)) ||
+        (tx.table && tx.table.toLowerCase().includes(query)),
     );
 
     if (filtered.length === 0) {
@@ -724,7 +844,9 @@
       return;
     }
 
-    list.innerHTML = filtered.map(tx => `
+    list.innerHTML = filtered
+      .map(
+        (tx) => `
       <div style="background:var(--bg-card-subtle); border:1px solid var(--border-color); padding:12px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
         <div>
           <strong style="color:var(--text-main); font-size:0.95rem; display:block;">${tx.id} — ${tx.customer} (${tx.table})</strong>
@@ -735,20 +857,22 @@
           <button class="btn btn-secondary btn-sm btn-reprint-tx" data-id="${tx.id}">Cetak Struk</button>
         </div>
       </div>
-    `).join('');
+    `,
+      )
+      .join("");
 
-    list.querySelectorAll('.btn-view-detail-tx').forEach(btn => {
-      btn.addEventListener('click', () => {
+    list.querySelectorAll(".btn-view-detail-tx").forEach((btn) => {
+      btn.addEventListener("click", () => {
         const txId = btn.dataset.id;
-        const tx = txs.find(t => t.id === txId);
+        const tx = txs.find((t) => t.id === txId);
         if (tx) openTxDetailModal(tx);
       });
     });
 
-    list.querySelectorAll('.btn-reprint-tx').forEach(btn => {
-      btn.addEventListener('click', () => {
+    list.querySelectorAll(".btn-reprint-tx").forEach((btn) => {
+      btn.addEventListener("click", () => {
         const txId = btn.dataset.id;
-        const tx = txs.find(t => t.id === txId);
+        const tx = txs.find((t) => t.id === txId);
         if (tx) {
           closeKasirHistoryModal();
           openReceiptModal(tx);
@@ -759,38 +883,42 @@
 
   // --- DETAIL TRANSAKSI MODAL ---
   function openTxDetailModal(tx) {
-    const modal = document.getElementById('txDetailModal');
+    const modal = document.getElementById("txDetailModal");
     if (!modal) return;
 
-    const elId = document.getElementById('tdTxId');
-    const elDateTime = document.getElementById('tdDateTime');
-    const elCustomer = document.getElementById('tdCustomer');
-    const elType = document.getElementById('tdType');
+    const elId = document.getElementById("tdTxId");
+    const elDateTime = document.getElementById("tdDateTime");
+    const elCustomer = document.getElementById("tdCustomer");
+    const elType = document.getElementById("tdType");
 
     if (elId) elId.textContent = tx.id;
-    if (elDateTime) elDateTime.textContent = tx.date + ' ' + tx.time;
+    if (elDateTime) elDateTime.textContent = tx.date + " " + tx.time;
     if (elCustomer) elCustomer.textContent = `${tx.customer} (${tx.table})`;
-    if (elType) elType.textContent = tx.type || 'Dine-in';
+    if (elType) elType.textContent = tx.type || "Dine-in";
 
-    const list = document.getElementById('tdItemsList');
+    const list = document.getElementById("tdItemsList");
     if (list) {
-      list.innerHTML = (tx.items || []).map(item => `
+      list.innerHTML = (tx.items || [])
+        .map(
+          (item) => `
         <div class="checkout-detail-item" style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.9rem;">
           <div>
             <strong>${item.name}</strong> x ${item.qty}
-            ${item.notesText ? `<br><small style="color:var(--text-muted);">Catatan: ${item.notesText}</small>` : ''}
+            ${item.notesText ? `<br><small style="color:var(--text-muted);">Catatan: ${item.notesText}</small>` : ""}
           </div>
           <div style="font-weight:700;">${formatRp((item.unitPrice || item.price || 0) * item.qty)}</div>
         </div>
-      `).join('');
+      `,
+        )
+        .join("");
     }
 
-    const elSubtotal = document.getElementById('tdSubtotal');
-    const elTax = document.getElementById('tdTax');
-    const elTotal = document.getElementById('tdTotal');
-    const elMethod = document.getElementById('tdPayMethod');
-    const elGiven = document.getElementById('tdPayGiven');
-    const elChange = document.getElementById('tdChange');
+    const elSubtotal = document.getElementById("tdSubtotal");
+    const elTax = document.getElementById("tdTax");
+    const elTotal = document.getElementById("tdTotal");
+    const elMethod = document.getElementById("tdPayMethod");
+    const elGiven = document.getElementById("tdPayGiven");
+    const elChange = document.getElementById("tdChange");
 
     if (elSubtotal) elSubtotal.textContent = formatRp(tx.subtotal || tx.total);
     if (elTax) elTax.textContent = formatRp(tx.tax || 0);
@@ -799,26 +927,30 @@
     if (elGiven) elGiven.textContent = formatRp(tx.given || tx.total);
     if (elChange) elChange.textContent = formatRp(tx.change || 0);
 
-    modal.classList.add('active');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add("active");
+    modal.style.setProperty("display", "flex", "important");
   }
 
   function closeTxDetailModal() {
-    const modal = document.getElementById('txDetailModal');
+    const modal = document.getElementById("txDetailModal");
     if (modal) {
-      modal.classList.remove('active');
-      modal.style.setProperty('display', 'none', 'important');
+      modal.classList.remove("active");
+      modal.style.setProperty("display", "none", "important");
     }
   }
 
   // --- CLOSING SHIFT & Z-REPORT FUNCTIONS ---
   function openClosingShiftModal() {
-    const modal = document.getElementById('closingShiftModal');
+    const modal = document.getElementById("closingShiftModal");
     if (!modal) return;
 
     const txs = state.transactions || [];
-    const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    const todayTxs = txs.filter(t => t.date === todayStr);
+    const todayStr = new Date().toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    const todayTxs = txs.filter((t) => t.date === todayStr);
 
     let totalOmset = 0;
     let totalCash = 0;
@@ -826,19 +958,21 @@
     let totalTransfer = 0;
     let totalItemsSold = 0;
 
-    todayTxs.forEach(t => {
+    todayTxs.forEach((t) => {
       const tot = t.total || 0;
       totalOmset += tot;
-      if (t.method === 'Tunai') totalCash += tot;
-      else if (t.method === 'QRIS') totalQris += tot;
+      if (t.method === "Tunai") totalCash += tot;
+      else if (t.method === "QRIS") totalQris += tot;
       else totalTransfer += tot;
 
-      (t.items || []).forEach(it => {
-        totalItemsSold += (it.qty || 1);
+      (t.items || []).forEach((it) => {
+        totalItemsSold += it.qty || 1;
       });
     });
 
-    const fullFormattedDate = window.POSStorage.formatFullDateWithTime ? window.POSStorage.formatFullDateWithTime(new Date()) : `${todayStr} (${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })})`;
+    const fullFormattedDate = window.POSStorage.formatFullDateWithTime
+      ? window.POSStorage.formatFullDateWithTime(new Date())
+      : `${todayStr} (${new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })})`;
 
     window._expectedOmsetToday = totalOmset;
     window._expectedCashToday = totalCash;
@@ -848,71 +982,84 @@
     window._expectedItemsSoldToday = totalItemsSold;
     window._fullFormattedDateToday = fullFormattedDate;
 
-    const elDate = document.getElementById('csDateText');
-    const elOmset = document.getElementById('csTotalOmsetVal');
-    const elCash = document.getElementById('csTotalCashVal');
-    const elQris = document.getElementById('csTotalQrisVal');
-    const elTransfer = document.getElementById('csTotalTransferVal');
-    const elCount = document.getElementById('csTxCountVal');
-    const elInput = document.getElementById('csCashActualInput');
+    const elDate = document.getElementById("csDateText");
+    const elOmset = document.getElementById("csTotalOmsetVal");
+    const elCash = document.getElementById("csTotalCashVal");
+    const elQris = document.getElementById("csTotalQrisVal");
+    const elTransfer = document.getElementById("csTotalTransferVal");
+    const elCount = document.getElementById("csTxCountVal");
+    const elInput = document.getElementById("csCashActualInput");
 
     if (elDate) elDate.textContent = fullFormattedDate;
     if (elOmset) elOmset.textContent = formatRp(totalOmset);
     if (elCash) elCash.textContent = formatRp(totalCash);
     if (elQris) elQris.textContent = formatRp(totalQris);
     if (elTransfer) elTransfer.textContent = formatRp(totalTransfer);
-    if (elCount) elCount.textContent = todayTxs.length + ' Transaksi Selesai';
+    if (elCount) elCount.textContent = todayTxs.length + " Transaksi Selesai";
     if (elInput) elInput.value = totalCash;
 
     calculateClosingDiff(totalCash);
 
-    modal.classList.add('active');
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add("active");
+    modal.style.setProperty("display", "flex", "important");
   }
 
   function closeClosingShiftModal() {
-    const modal = document.getElementById('closingShiftModal');
+    const modal = document.getElementById("closingShiftModal");
     if (modal) {
-      modal.classList.remove('active');
-      modal.style.setProperty('display', 'none', 'important');
+      modal.classList.remove("active");
+      modal.style.setProperty("display", "none", "important");
     }
   }
 
   function calculateClosingDiff(expectedCash) {
-    const inputVal = parseInt(document.getElementById('csCashActualInput')?.value) || 0;
+    const inputVal =
+      parseInt(document.getElementById("csCashActualInput")?.value) || 0;
     const diff = inputVal - expectedCash;
-    const diffEl = document.getElementById('csCashDiffText');
+    const diffEl = document.getElementById("csCashDiffText");
     if (!diffEl) return;
 
     if (diff === 0) {
-      diffEl.textContent = 'Rp 0 (Sesuai / Pas)';
-      diffEl.style.color = '#047857';
+      diffEl.textContent = "Rp 0 (Sesuai / Pas)";
+      diffEl.style.color = "#047857";
     } else if (diff > 0) {
       diffEl.textContent = `+${formatRp(diff)} (Uang Lebih)`;
-      diffEl.style.color = '#3b82f6';
+      diffEl.style.color = "#3b82f6";
     } else {
       diffEl.textContent = `${formatRp(diff)} (Uang Kurang/Selisih)`;
-      diffEl.style.color = '#dc2626';
+      diffEl.style.color = "#dc2626";
     }
   }
 
   function processClosingShift() {
     const expectedCash = window._expectedCashToday || 0;
-    const actualCash = parseInt(document.getElementById('csCashActualInput')?.value) || 0;
+    const actualCash =
+      parseInt(document.getElementById("csCashActualInput")?.value) || 0;
     const diff = actualCash - expectedCash;
-    const notesText = document.getElementById('csNotesInput')?.value || 'Setoran harian kasir';
+    const notesText =
+      document.getElementById("csNotesInput")?.value || "Setoran harian kasir";
 
-    const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    const nowTimeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace(':', '.');
-    const fullFormattedDate = window._fullFormattedDateToday || (window.POSStorage.formatFullDateWithTime ? window.POSStorage.formatFullDateWithTime(new Date()) : `${todayStr} (${nowTimeStr})`);
-    
+    const todayStr = new Date().toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    const nowTimeStr = new Date()
+      .toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
+      .replace(":", ".");
+    const fullFormattedDate =
+      window._fullFormattedDateToday ||
+      (window.POSStorage.formatFullDateWithTime
+        ? window.POSStorage.formatFullDateWithTime(new Date())
+        : `${todayStr} (${nowTimeStr})`);
+
     // Create Closing Report Record for Owner/Admin
     const closingRecord = {
-      id: 'CLS-' + Date.now(),
+      id: "CLS-" + Date.now(),
       fullDateTime: fullFormattedDate,
       date: todayStr,
       time: nowTimeStr,
-      cashier: state.role || 'Kasir',
+      cashier: state.role || "Kasir",
       totalOmset: window._expectedOmsetToday || 0,
       expectedCash: expectedCash,
       actualCash: actualCash,
@@ -922,7 +1069,7 @@
       txCount: window._expectedTxCountToday || 0,
       totalItemsSold: window._expectedItemsSoldToday || 0,
       notes: notesText,
-      status: diff === 0 ? 'Sesuai' : (diff > 0 ? 'Lebih' : 'Selisih / Kurang')
+      status: diff === 0 ? "Sesuai" : diff > 0 ? "Lebih" : "Selisih / Kurang",
     };
 
     if (!Array.isArray(state.closingReports)) state.closingReports = [];
@@ -933,12 +1080,16 @@
     state.draftOrders = [];
     saveState(state);
 
-    showToast(`Closing Shift (${fullFormattedDate}) Berhasil Diselesaikan & Diteruskan ke Admin!`, 'success');
+    showToast(
+      `Closing Shift (${fullFormattedDate}) Berhasil Diselesaikan & Diteruskan ke Admin!`,
+      "success",
+    );
     closeClosingShiftModal();
 
     setTimeout(() => {
-      alert(`🎉 CLOSING SHIFT SUKSES!\n\nLaporan telah otomatis tersimpan ke Dashboard Admin/Owner.\n\nWaktu Closing: ${fullFormattedDate}\nSetoran Uang Fisik Kasir: ${formatRp(actualCash)}\nTotal Omset Tunai Sistem: ${formatRp(expectedCash)}\nStatus Selisih: ${diff === 0 ? 'Sesuai (Rp 0)' : formatRp(diff)}\n\nSeluruh antrean draft pesanan telah dibersihkan untuk hari esok.`);
+      alert(
+        `🎉 CLOSING SHIFT SUKSES!\n\nLaporan telah otomatis tersimpan ke Dashboard Admin/Owner.\n\nWaktu Closing: ${fullFormattedDate}\nSetoran Uang Fisik Kasir: ${formatRp(actualCash)}\nTotal Omset Tunai Sistem: ${formatRp(expectedCash)}\nStatus Selisih: ${diff === 0 ? "Sesuai (Rp 0)" : formatRp(diff)}\n\nSeluruh antrean draft pesanan telah dibersihkan untuk hari esok.`,
+      );
     }, 300);
   }
-
 })();
