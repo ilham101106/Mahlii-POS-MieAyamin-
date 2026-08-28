@@ -654,6 +654,19 @@ body {
 .data-table .text-right { text-align: right; }
 .data-table .text-center { text-align: center; }
 
+/* PROPORTIONAL TABLE COLUMN LAYOUT & SEPARATOR UTILITIES */
+.table-stock-col-name { width: 25%; text-align: left; }
+.table-stock-col-current { width: 25%; text-align: center; border-right: 1px dashed var(--border-color); }
+.table-stock-col-min { width: 15%; text-align: right; padding-left: 24px !important; }
+.table-stock-col-status { width: 15%; text-align: center; }
+.table-stock-col-action { width: 20%; text-align: right; }
+th.table-stock-col-min { padding-left: 24px !important; }
+
+.table-feedback-col-cust { width: 24%; text-align: left; }
+.table-feedback-col-date { width: 18%; text-align: left; }
+.table-feedback-col-rating { width: 18%; text-align: center; }
+.table-feedback-col-review { width: 40%; text-align: left; }
+
 /* BADGES ENHANCEMENTS */
 .badge {
   display: inline-flex;

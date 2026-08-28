@@ -414,19 +414,21 @@
 
       return `
         <tr>
-          <td class="text-left"><strong>${item.name}</strong></td>
-          <td class="text-center">
-            <div style="display:inline-flex; align-items:center; justify-content:center; gap:8px;">
-              <button class="btn-qty btn-quick-sub-stock" data-key="${key}" style="width:28px; height:28px; border-radius:6px; border:1px solid var(--border-color); background:#fff; font-weight:800; cursor:pointer;">-</button>
-              <strong style="color: ${item.stock <= item.minStock ? 'var(--danger)' : 'var(--text-main)'}; font-size:1rem; min-width:60px; text-align:center;">
+          <td class="table-stock-col-name"><strong>${item.name}</strong></td>
+          <td class="table-stock-col-current">
+            <div style="display:inline-flex; align-items:center; justify-content:center; gap:10px;">
+              <button class="btn-qty btn-quick-sub-stock" data-key="${key}" style="width:30px; height:30px; border-radius:8px; border:1px solid var(--border-color); background:#fff; font-weight:800; cursor:pointer; box-shadow:var(--shadow-sm);">-</button>
+              <strong style="color: ${item.stock <= item.minStock ? 'var(--danger)' : 'var(--text-main)'}; font-size:1.05rem; min-width:65px; text-align:center;">
                 ${item.stock} ${item.unit}
               </strong>
-              <button class="btn-qty btn-quick-add-stock" data-key="${key}" style="width:28px; height:28px; border-radius:6px; border:1px solid var(--border-color); background:#fff; font-weight:800; cursor:pointer;">+</button>
+              <button class="btn-qty btn-quick-add-stock" data-key="${key}" style="width:30px; height:30px; border-radius:8px; border:1px solid var(--border-color); background:#fff; font-weight:800; cursor:pointer; box-shadow:var(--shadow-sm);">+</button>
             </div>
           </td>
-          <td class="text-right"><strong style="color:var(--text-muted); font-size:0.88rem;">${item.minStock} ${item.unit}</strong></td>
-          <td class="text-center">${statusBadge}</td>
-          <td class="text-right">
+          <td class="table-stock-col-min">
+            <strong style="color:var(--text-muted); font-size:0.9rem;">${item.minStock} ${item.unit}</strong>
+          </td>
+          <td class="table-stock-col-status">${statusBadge}</td>
+          <td class="table-stock-col-action">
             <div style="display:flex; justify-content:flex-end; gap:6px;">
               <button class="btn btn-secondary btn-sm btn-restock-ten" data-key="${key}">+ Restock</button>
               <button class="btn btn-secondary btn-sm btn-edit-stock-details" data-key="${key}">Edit</button>
@@ -570,22 +572,31 @@
 
     const feedbacks = state.feedbacks || [];
     if (feedbacks.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted" style="padding:20px;">Belum ada ulasan dari pelanggan</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted" style="padding:24px;">Belum ada ulasan dari pelanggan</td></tr>`;
       return;
     }
 
     tbody.innerHTML = feedbacks.map(fb => `
       <tr>
-        <td class="text-left">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <strong style="font-size:0.95rem;">${fb.name}</strong>
-            <span class="badge badge-success" style="font-size:0.7rem; padding:2px 8px;">✓ Terverifikasi</span>
+        <td class="table-feedback-col-cust">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+            <strong style="font-size:0.95rem; color:var(--text-main);">${fb.name}</strong>
+            <span class="badge badge-success" style="font-size:0.7rem; padding:3px 8px; margin-left:4px;">✓ Terverifikasi</span>
           </div>
-          <small class="text-muted">${fb.table || 'Meja Umum'}</small>
+          <small class="text-muted" style="display:block; margin-top:2px; font-weight:600;">${fb.table || 'Meja Umum'}</small>
         </td>
-        <td class="text-left"><small class="text-muted" style="font-weight:600;">${fb.date}</small></td>
-        <td class="text-center"><span style="color:#f59e0b; font-weight:800; font-size:0.9rem;">${'⭐'.repeat(fb.rating)}</span> <small class="text-muted">(${fb.rating}/5)</small></td>
-        <td class="text-left" style="white-space:normal; max-width:400px; line-height:1.4;">"${fb.review}"</td>
+        <td class="table-feedback-col-date">
+          <small class="text-muted" style="font-weight:700;">${fb.date}</small>
+        </td>
+        <td class="table-feedback-col-rating">
+          <div style="display:inline-flex; align-items:center; gap:6px;">
+            <span style="color:#f59e0b; font-weight:800; font-size:0.95rem; letter-spacing:1px;">${'⭐'.repeat(fb.rating)}</span>
+            <small style="color:var(--text-muted); font-weight:700; font-size:0.8rem;">(${fb.rating}/5)</small>
+          </div>
+        </td>
+        <td class="table-feedback-col-review" style="white-space:normal; max-width:400px; line-height:1.5;">
+          <span style="color:var(--text-main); font-style:italic;">"${fb.review}"</span>
+        </td>
       </tr>
     `).join('');
   }
