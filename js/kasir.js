@@ -705,27 +705,14 @@
     }
 
     list.innerHTML = filtered.map(tx => `
-      <div style="background:var(--bg-card-subtle); border:1px solid var(--border-color); padding:14px 16px; border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <div>
-            <strong style="color:var(--text-main); font-size:0.95rem; display:block;">${tx.id} — ${tx.customer} (${tx.table})</strong>
-            <small style="color:var(--text-muted);">${tx.date} ${tx.time} • ${tx.method} • <span style="color:var(--primary); font-weight:800;">${formatRp(tx.total)}</span></small>
-          </div>
-          <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <button class="btn btn-primary btn-sm btn-view-detail-tx" data-id="${tx.id}">🔍 Detail</button>
-            <button class="btn btn-secondary btn-sm btn-reprint-tx" data-id="${tx.id}">🖨️ Struk</button>
-          </div>
+      <div style="background:var(--bg-card-subtle); border:1px solid var(--border-color); padding:12px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div>
+          <strong style="color:var(--text-main); font-size:0.95rem; display:block;">${tx.id} — ${tx.customer} (${tx.table})</strong>
+          <small style="color:var(--text-muted);">${tx.date} ${tx.time} • ${tx.method} • <span style="color:var(--primary); font-weight:700;">${formatRp(tx.total)}</span></small>
         </div>
-
-        <!-- Inline Item List Preview -->
-        <div style="background:#ffffff; border:1px solid var(--border-color); border-radius:8px; padding:10px 12px; font-size:0.85rem;">
-          <div style="font-weight:700; color:var(--text-muted); font-size:0.75rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">Item Pesanan (${tx.items ? tx.items.length : 0}):</div>
-          ${(tx.items || []).map(it => `
-            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
-              <span><strong>${it.qty}x</strong> ${it.name} ${it.notesText ? `<small class="text-muted">(${it.notesText})</small>` : ''}</span>
-              <span style="font-weight:700; color:var(--text-main);">${formatRp((it.unitPrice || it.price || 0) * it.qty)}</span>
-            </div>
-          `).join('')}
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm btn-view-detail-tx" data-id="${tx.id}">Detail</button>
+          <button class="btn btn-secondary btn-sm btn-reprint-tx" data-id="${tx.id}">Cetak Struk</button>
         </div>
       </div>
     `).join('');
