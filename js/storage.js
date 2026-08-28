@@ -1030,33 +1030,10 @@
 
       const parsed = JSON.parse(saved);
 
-      // Auto-migrate legacy pig photo / telur puyuh menu to Ceker Pedas
-      if (Array.isArray(parsed.customMenu)) {
-        parsed.customMenu = parsed.customMenu.map((item) => {
-          const isTelurPuyuh =
-            item.id === "top-4" ||
-            (item.name && item.name.toLowerCase().includes("puyuh")) ||
-            (item.name && item.name.toLowerCase().includes("telur")) ||
-            (item.image &&
-              item.image.includes("photo-1516467508483-a7212febe31a")) ||
-            (item.image &&
-              item.image.includes("unsplash.com") &&
-              item.name &&
-              item.name.includes("Puyuh"));
-
-          if (isTelurPuyuh) {
-            return {
-              id: "top-4",
-              name: "Extra Ceker Pedas (3 pcs)",
-              cat: "topping",
-              price: 6000,
-              image: "images/ceker_pedas.png",
-              desc: "Ceker ayam empuk bumbu pedas mercon meresap.",
-              ingredients: [{ id: "ceker", qty: 3 }],
-            };
-          }
-          return item;
-        });
+      // Auto-purge legacy menu items (e.g. old Mie Ayam Jamur, legacy mie-1, etc.)
+      const hasLegacyMenu = Array.isArray(parsed.customMenu) && parsed.customMenu.some(m => m.id.startsWith('mie-') || m.id === 'top-1' || m.id === 'samp-1' || (m.name && m.name.toLowerCase().includes('jamur')));
+      if (hasLegacyMenu || !Array.isArray(parsed.customMenu) || parsed.customMenu.length < 50) {
+        parsed.customMenu = JSON.parse(JSON.stringify(DEFAULT_MENU));
       }
 
       const todayStr = new Date().toLocaleDateString("id-ID", {
@@ -1074,12 +1051,11 @@
         }
       }
 
-      // Re-save sanitized state to v3 key
+      // Re-save sanitized state to v4 key
       const newState = {
         role: parsed.role || "Kasir",
         lastActiveDate: todayStr,
-        customMenu:
-          parsed.customMenu || JSON.parse(JSON.stringify(DEFAULT_MENU)),
+        customMenu: parsed.customMenu,
         stock: parsed.stock || JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS)),
         cart: parsed.cart || [],
         draftOrders: parsed.draftOrders || [],
