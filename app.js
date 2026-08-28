@@ -261,7 +261,7 @@
     bakso: { name: 'Bakso Sapi', category: 'Topping', stock: 120, min: 30, unit: 'biji' },
     pangsit: { name: 'Pangsit Goreng/Kuah', category: 'Topping', stock: 150, min: 40, unit: 'biji' },
     ceker: { name: 'Ceker Semur', category: 'Topping', stock: 45, min: 15, unit: 'biji' },
-    telur_puyuh: { name: 'Telur Puyuh Semur', category: 'Topping', stock: 50, min: 15, unit: 'biji' },
+    ceker_pedas: { name: 'Ceker Pedas Mercon', category: 'Topping', stock: 50, min: 15, unit: 'biji' },
     teh: { name: 'Teh Celup / Tubruk', category: 'Minuman', stock: 200, min: 30, unit: 'porsi' },
     jeruk: { name: 'Jeruk Peras Segar', category: 'Minuman', stock: 60, min: 15, unit: 'buah' },
     es_batu: { name: 'Es Batu Kristal', category: 'Minuman', stock: 100, min: 20, unit: 'porsi' },

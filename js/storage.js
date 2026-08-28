@@ -5,7 +5,7 @@
 (function (window) {
   'use strict';
 
-  const STORAGE_KEY = 'mieayamin_pos_state_v2';
+  const STORAGE_KEY = 'mieayamin_pos_state_v3';
 
   const DEFAULT_MENU = [
     {
@@ -252,7 +252,6 @@
     bakso: { name: 'Bakso Sapi Halus', stock: 150, unit: 'pcs', minStock: 30 },
     pangsit: { name: 'Pangsit Goreng/Rebus', stock: 120, unit: 'pcs', minStock: 25 },
     ceker: { name: 'Ceker Ayam Semur', stock: 60, unit: 'pcs', minStock: 10 },
-    telur_puyuh: { name: 'Telur Puyuh Semur', stock: 50, unit: 'pcs', minStock: 10 },
     teh: { name: 'Daun Teh Spesial', stock: 200, unit: 'porsi', minStock: 40 },
     teh_botol: { name: 'Teh Botol Sosro', stock: 48, unit: 'botol', minStock: 12 },
     teh_kotak: { name: 'Teh Kotak Sosro', stock: 48, unit: 'kotak', minStock: 12 },
@@ -268,18 +267,27 @@
 
   function loadState() {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      let saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        // Fallback check for v2 / v1 legacy key
+        saved = localStorage.getItem('mieayamin_pos_state_v2') || localStorage.getItem('mieayamin_pos_state');
+      }
       if (!saved) return initializeDefaultState();
+      
       const parsed = JSON.parse(saved);
 
       // Auto-migrate legacy pig photo / telur puyuh menu to Ceker Pedas
       if (Array.isArray(parsed.customMenu)) {
-        let modified = false;
         parsed.customMenu = parsed.customMenu.map(item => {
-          if (item.id === 'top-4' || (item.name && item.name.includes('Telur Puyuh')) || (item.image && item.image.includes('photo-1516467508483-a7212febe31a'))) {
-            modified = true;
+          const isTelurPuyuh = (item.id === 'top-4') || 
+                               (item.name && item.name.toLowerCase().includes('puyuh')) || 
+                               (item.name && item.name.toLowerCase().includes('telur')) || 
+                               (item.image && item.image.includes('photo-1516467508483-a7212febe31a')) ||
+                               (item.image && item.image.includes('unsplash.com') && item.name && item.name.includes('Puyuh'));
+          
+          if (isTelurPuyuh) {
             return {
-              ...item,
+              id: 'top-4',
               name: 'Extra Ceker Pedas (3 pcs)',
               cat: 'topping',
               price: 6000,
@@ -290,11 +298,10 @@
           }
           return item;
         });
-        if (modified) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-        }
       }
-      return {
+
+      // Re-save sanitized state to v3 key
+      const newState = {
         role: parsed.role || 'Kasir',
         customMenu: parsed.customMenu || JSON.parse(JSON.stringify(DEFAULT_MENU)),
         stock: parsed.stock || JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS)),
@@ -308,6 +315,9 @@
         transactions: parsed.transactions || generateInitialTransactions(),
         feedbacks: parsed.feedbacks || generateInitialFeedbacks()
       };
+      
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+      return newState;
     } catch (e) {
       console.error('Error loading state:', e);
       return initializeDefaultState();
