@@ -86,8 +86,9 @@
             <!-- Search & Filters -->
             <div class="catalog-header-bar">
               <div class="catalog-header-top">
-                <div class="search-box">
-                  <input type="text" id="searchInput" placeholder="Cari menu mie ayam, minuman, topping, kerupuk...">
+                <div class="search-box" style="position:relative; display:flex; align-items:center;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; left:14px; color:var(--text-muted); pointer-events:none;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" id="searchInput" placeholder="Cari menu mie ayam, minuman, topping...">
                 </div>
                 <div class="view-toggle-btns">
                   <button class="btn-view-toggle active" id="btnViewGrid" title="Tampilan Card Grid">Grid</button>
@@ -96,16 +97,43 @@
               </div>
 
               <!-- Klasifikasi Kategori Menu Mie Ayam Bojoloro -->
-              <div class="category-tabs" id="categoryTabs" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:6px;">
-                <button class="cat-tab active" data-cat="all">Semua (116)</button>
-                <button class="cat-tab" data-cat="mie_ayam">🍜 Mie Ayam</button>
-                <button class="cat-tab" data-cat="mie_yamin">🍜 Mie Yamin</button>
-                <button class="cat-tab" data-cat="mie_ijo">🥬 Mie Ijo</button>
-                <button class="cat-tab" data-cat="mie_spicy">🌶️ Mie Spicy</button>
-                <button class="cat-tab" data-cat="kwetiaw">🥢 Kwetiaw</button>
-                <button class="cat-tab" data-cat="porsi_tambahan">🍡 Porsi & Tambahan</button>
-                <button class="cat-tab" data-cat="minuman">🥤 Aneka Minuman</button>
-                <button class="cat-tab" data-cat="jus">🍹 Aneka Jus</button>
+              <div class="category-tabs" id="categoryTabs">
+                <button class="cat-tab active" data-cat="all">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+                  <span>Semua (116)</span>
+                </button>
+                <button class="cat-tab" data-cat="mie_ayam">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"/><path d="M7 8V3M12 8V3M17 8V3"/></svg>
+                  <span>Mie Ayam</span>
+                </button>
+                <button class="cat-tab" data-cat="mie_yamin">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"/><path d="M8 7c.5-1 1.5-1 2 0s1.5 1 2 0"/><path d="M6 4c.5-1 1.5-1 2 0s1.5 1 2 0"/></svg>
+                  <span>Mie Yamin</span>
+                </button>
+                <button class="cat-tab" data-cat="mie_ijo">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                  <span>Mie Ijo</span>
+                </button>
+                <button class="cat-tab" data-cat="mie_spicy">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3Z"/></svg>
+                  <span>Mie Spicy</span>
+                </button>
+                <button class="cat-tab" data-cat="kwetiaw">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5 6 3-17 11"/><path d="m18 3 3 3-17 11"/><circle cx="8" cy="18" r="3"/></svg>
+                  <span>Kwetiaw</span>
+                </button>
+                <button class="cat-tab" data-cat="porsi_tambahan">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                  <span>Porsi & Tambahan</span>
+                </button>
+                <button class="cat-tab" data-cat="minuman">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-8"/><path d="M6 11h12"/><path d="m15 3-3 8"/></svg>
+                  <span>Aneka Minuman</span>
+                </button>
+                <button class="cat-tab" data-cat="jus">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14l-2 7a6 6 0 0 1-12 0Z"/><path d="M12 17v4M8 21h8"/><path d="m15 2-4 9"/></svg>
+                  <span>Aneka Jus</span>
+                </button>
               </div>
             </div>
 

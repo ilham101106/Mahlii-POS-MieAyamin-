@@ -268,15 +268,6 @@ body {
   box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
 }
 
-.search-box::before {
-  content: '🔍';
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1rem;
-}
-
 .view-toggle-btns {
   display: flex;
   background: var(--bg-canvas);
@@ -312,6 +303,9 @@ body {
 }
 
 .cat-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   padding: 8px 18px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--border-color);
@@ -324,6 +318,15 @@ body {
   transition: var(--transition);
 }
 
+.cat-tab svg {
+  transition: transform 0.2s ease, stroke 0.2s ease;
+  stroke: currentColor;
+}
+
+.cat-tab:hover svg {
+  transform: scale(1.1);
+}
+
 .cat-tab:hover { background: var(--bg-card-subtle); color: var(--text-main); }
 
 .cat-tab.active {
@@ -331,6 +334,10 @@ body {
   color: #ffffff;
   border-color: transparent;
   box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.cat-tab.active svg {
+  stroke: #ffffff;
 }
 
 /* MENU GRID & LIST VIEW */
